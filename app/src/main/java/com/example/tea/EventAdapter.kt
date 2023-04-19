@@ -1,5 +1,3 @@
-package com.example.tea
-
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
@@ -7,10 +5,17 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tea.Event
+import com.example.tea.R
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.FirebaseFirestoreException
+
 
 class EventAdapter(
-    private val events: MutableList<Event>
-) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
+    options: FirestoreRecyclerOptions<Event>
+) : FirestoreRecyclerAdapter<Event, EventAdapter.EventViewHolder>(options) {
+    private var isOnline = true
 
     class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvEventTitle: TextView = itemView.findViewById(R.id.tvEventTitle)
@@ -26,38 +31,53 @@ class EventAdapter(
         return EventViewHolder(itemView)
     }
 
-    fun addEvent(event: Event) {
-        events.add(event)
-        notifyItemInserted(events.size - 1)
+    override fun onBindViewHolder(holder: EventViewHolder, position: Int, model: Event) {
+        holder.tvEventTitle.text = model.title
+        holder.cbDone.isChecked = model.checked
+        holder.cbDone.setOnClickListener {
+            val isChecked = holder.cbDone.isChecked
+            if (isOnline) {
+                snapshots.getSnapshot(position).reference.update("checked", isChecked)
+            } else {
+                model.checked = isChecked
+            }
+        }
+        if (model.checked) {
+            holder.tvEventTitle.paintFlags = holder.tvEventTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        } else {
+            holder.tvEventTitle.paintFlags = holder.tvEventTitle.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+        }
     }
 
-    fun deleteDoneEvents() {
-        events.removeAll { event ->
-            event.isChecked
+    fun deleteCheckedItems(): Int {
+        var itemsDeleted = 0
+        for (i in 0 until itemCount) {
+            val snapshot = snapshots.getSnapshot(i)
+            val event = snapshot.toObject(Event::class.java)
+            if (event?.checked == true) {
+                snapshot.reference.delete()
+                itemsDeleted += 1
+            }
         }
         notifyDataSetChanged()
+        return itemsDeleted
     }
 
-    private fun toggleStrikeThrough(tvEventTitle: TextView, isChecked: Boolean) {
-        if (isChecked) {
-            tvEventTitle.paintFlags = tvEventTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+    override fun onDataChanged() {
+        super.onDataChanged()
+        if (itemCount == 0) {
+            // Handle empty state
         } else {
-            tvEventTitle.paintFlags = tvEventTitle.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            // Handle non-empty state
         }
     }
 
-    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        val curEvent = events[position]
-        holder.tvEventTitle.text = curEvent.title
-        holder.cbDone.isChecked = curEvent.isChecked
-        toggleStrikeThrough(holder.tvEventTitle, curEvent.isChecked)
-        holder.cbDone.setOnCheckedChangeListener { _, isChecked ->
-            toggleStrikeThrough(holder.tvEventTitle, isChecked)
-            curEvent.isChecked = isChecked
-        }
+    fun setIsOnline(isOnline: Boolean) {
+        this.isOnline = isOnline
     }
 
-    override fun getItemCount(): Int {
-        return events.size
+    override fun onError(e: FirebaseFirestoreException) {
+        super.onError(e)
+        // Handle error
     }
 }
