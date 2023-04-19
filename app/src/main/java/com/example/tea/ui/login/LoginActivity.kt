@@ -17,6 +17,7 @@ import com.example.tea.MainActivity
 import com.example.tea.databinding.ActivityLoginBinding
 
 import com.example.tea.R
+import com.example.tea.data.LoginDataSource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -41,7 +42,8 @@ class LoginActivity : AppCompatActivity() {
         val currentUser = auth.currentUser
 
         if(currentUser != null){
-            updateUiWithUser(LoggedInUserView(displayName = currentUser.toString()))
+            val name = LoginDataSource.getDisplayName(currentUser)
+            updateUiWithUser(LoggedInUserView(displayName = name))
         }
 
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())

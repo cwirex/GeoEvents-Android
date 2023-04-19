@@ -3,6 +3,7 @@ package com.example.tea.data
 import android.util.Log
 import com.example.tea.data.model.LoggedInUser
 import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import java.io.IOException
@@ -14,6 +15,9 @@ class LoginDataSource {
 
     companion object {
         const val TAG = "LoginDataSource"
+        fun getDisplayName(user: FirebaseUser?): String{
+            return user?.email?.substringBefore("@").toString()
+        }
     }
 
     fun login(username: String, password: String, callback: (Result<LoggedInUser>) -> Unit) {
@@ -30,8 +34,8 @@ class LoginDataSource {
                                     if (signInTask.isSuccessful) {
                                         Log.d(TAG, "signInWithEmail:success")
                                         val user = auth.currentUser
-                                        val displayName = user?.email?.substringBefore("@")
-                                        val loggedInUser = LoggedInUser(user!!.uid, displayName!!)
+                                        val displayName = getDisplayName(user)
+                                        val loggedInUser = LoggedInUser(user!!.uid, displayName)
                                         callback(Result.Success(loggedInUser))
                                     } else {
                                         Log.w(TAG, "signInWithEmail:failure", signInTask.exception)
@@ -63,8 +67,6 @@ class LoginDataSource {
             callback(Result.Error(IOException("Error on logging attempt", e)))
         }
     }
-
-
 
     fun logout() {
         Firebase.auth.signOut()
