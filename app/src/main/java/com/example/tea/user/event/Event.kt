@@ -4,7 +4,7 @@ import com.example.tea.user.model.Marker
 import java.time.LocalDateTime
 
 data class Event(
-    val eid: String,
+    var eid: String,
     val ownerId: String,
     val title: String,
     val description: String,

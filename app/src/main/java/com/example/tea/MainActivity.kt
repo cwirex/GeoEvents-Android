@@ -61,18 +61,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun testAddDelete(){
+    private fun testDb(){
         val uid = FirebaseAuth.getInstance().uid
         if (uid != null){
             val user = User(uid)
-            user.eventManager.addEvent(user.eventManager.getSampleEvent())
-            Toast.makeText(this@MainActivity, "Added event to DB", Toast.LENGTH_SHORT).show()
-
-            user.eventManager.getEvent("event-id") { event ->
-                if (event != null) {
-                    Toast.makeText(this@MainActivity, event.toString(), Toast.LENGTH_LONG).show()
-                }
-            }
+//            val eid = user.eventManager.addEvent(user.eventManager.getSampleEvent())
+//            Toast.makeText(this@MainActivity, "Added event $eid to DB", Toast.LENGTH_SHORT).show()
+//
+//            user.eventManager.updateEvent("event-id", mapOf("lat" to 44))
+//            user.eventManager.getEvent("event-id") { event ->
+//                if (event != null) {
+//                    Toast.makeText(this@MainActivity, event.toString(), Toast.LENGTH_LONG).show()
+//                } else{
+//                    Toast.makeText(this@MainActivity, "Warning: Missing event", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//            user.eventManager.deleteEvent("0419175610334")
         }
     }
 
@@ -83,7 +87,7 @@ class MainActivity : AppCompatActivity() {
                 "Deleted $nDeleted item${if (nDeleted > 1) "s" else ""}",
                 Toast.LENGTH_SHORT).show()
         }
-        testAddDelete()
+        testDb()
     }
 
     companion object {

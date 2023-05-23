@@ -1,8 +1,10 @@
 package com.example.tea.user.event
+import android.nfc.FormatException
 import com.example.tea.user.Database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.example.tea.user.User
 import com.example.tea.user.model.Marker
+import com.google.android.gms.tasks.OnFailureListener
 import java.time.LocalDateTime
 import java.util.*
 
@@ -22,7 +24,6 @@ class EventManager(val user: User) : Database.Events {
                         callback(event)
                     }
                 }
-                callback(null)
             }
             .addOnFailureListener { exception ->
                 // Error fetching document
@@ -34,10 +35,13 @@ class EventManager(val user: User) : Database.Events {
 
     }
 
-
-    fun addEvent(event: Event){
+/** Sends Event to db. If eid is empty, generates it in-place.
+ * Returns event id */
+    fun addEvent(event: Event): String{
+        if(event.eid == "")
+            event.eid = "${user.getId().drop(user.getId().length-4)}${LocalDateTime.now().hashCode()}"
         addEvent(event.eid, mapToPojo(event))
-       // TODO("generate EID")
+        return event.eid
     }
 
     override fun addEvent(eid: String, event: Database.Events.EventData) {
@@ -51,17 +55,29 @@ class EventManager(val user: User) : Database.Events {
             }
     }
 
-    override fun updateEvent(eid: String, event: Database.Events.EventData) {
-        TODO("Not yet implemented")
+    override fun updateEvent(eid: String, updateMap: Map<String, Any>) {
+        var isPojo = true
+        for (value in updateMap.values) {
+            if (value is Map<*, *> || value is List<*>) {
+                isPojo = false
+                break
+            }
+        }
+        if(isPojo) collectionRef.document(eid)
+            .update(updateMap)
+            .addOnFailureListener{ e -> throw Exception("Failed to update document $eid: $e")}
+        else throw Exception("Cannot update with invalid pojo object")
     }
 
     override fun deleteEvent(eid: String) {
-        TODO("Not yet implemented")
+        collectionRef.document(eid)
+            .delete()
+            .addOnFailureListener { e -> throw Exception("Failed to delete document $eid: $e") }
     }
 
     fun getSampleEvent(): Event{
         return Event(
-            eid = "event-id",
+            eid = "",
             ownerId = "owner-id",
             title = "Sample Event",
             description = "This is a sample event",

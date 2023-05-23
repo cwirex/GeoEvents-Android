@@ -38,7 +38,7 @@ interface Database {
 
         fun getEvent(eid: String, callback: (event: Event?) -> Unit)
         fun addEvent(eid: String, event: EventData)
-        fun updateEvent(eid: String, event: EventData)
+        fun updateEvent(eid: String, updateMap: Map<String, Any>)
         fun deleteEvent(eid: String)
     }
 }
