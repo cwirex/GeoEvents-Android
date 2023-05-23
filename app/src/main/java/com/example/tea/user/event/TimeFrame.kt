@@ -1,8 +1,8 @@
 package com.example.tea.user.event
 
-import java.util.Date
+import java.time.LocalDateTime
 
-class TimeFrame(val start: Date, val end: Date) {
+class TimeFrame(val start: LocalDateTime, val end: LocalDateTime) {
     /** Returns value in minutes */
     fun getDuration(): Int {
         return 0

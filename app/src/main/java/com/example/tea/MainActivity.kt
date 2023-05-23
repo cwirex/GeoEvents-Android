@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tea.databinding.ActivityMainBinding
+import com.example.tea.user.User
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -60,6 +61,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun testAddDelete(){
+        val uid = FirebaseAuth.getInstance().uid
+        if (uid != null){
+            val user = User(uid)
+            user.eventManager.addEvent(user.eventManager.getSampleEvent())
+            Toast.makeText(this@MainActivity, "Added event to DB", Toast.LENGTH_SHORT).show()
+
+            user.eventManager.getEvent("event-id") { event ->
+                if (event != null) {
+                    Toast.makeText(this@MainActivity, event.toString(), Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
     private val deleteEventListener = View.OnClickListener {
         val nDeleted = eventAdapter.deleteCheckedItems()
         if (nDeleted > 0){
@@ -67,6 +83,7 @@ class MainActivity : AppCompatActivity() {
                 "Deleted $nDeleted item${if (nDeleted > 1) "s" else ""}",
                 Toast.LENGTH_SHORT).show()
         }
+        testAddDelete()
     }
 
     companion object {
