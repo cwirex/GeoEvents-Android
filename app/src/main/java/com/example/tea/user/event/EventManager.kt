@@ -7,12 +7,13 @@ import com.example.tea.user.model.Marker
 import com.google.android.gms.tasks.OnFailureListener
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.collections.HashMap
 
 /** Holds user's events and manages them */
 class EventManager(val user: User) : Database.Events {
     private val collectionRef = FirebaseFirestore.getInstance().collection("events")
     private val userRef = FirebaseFirestore.getInstance().collection("users").document(user.getId())
-
+    private val events: MutableMap<String, Event> = mutableMapOf()
     override fun getEvent(eid: String, callback: (event: Event?) -> Unit) {
         collectionRef.document(eid)
             .get()
@@ -123,6 +124,10 @@ class EventManager(val user: User) : Database.Events {
     fun addSampleEvent(){
         val event = getSampleEvent()
         addEvent(event)
+    }
+
+    fun getUserEvents(): HashMap<String, Event> {
+        return HashMap(events)
     }
 
 }
