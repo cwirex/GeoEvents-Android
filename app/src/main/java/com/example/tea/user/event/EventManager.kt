@@ -47,25 +47,20 @@ class EventManager(val user: User) : Database.Events {
     override fun addEvent(eid: String, event: Database.Events.EventData) {
         collectionRef.document(eid)
             .set(event)
-            .addOnSuccessListener { _ ->
-                println("Event added with ID: $eid")
-            }
             .addOnFailureListener { e ->
-                println("Error adding event: $e")
+               throw Exception("Exception on addEvent for $eid: $e")
             }
     }
 
     override fun updateEvent(eid: String, updateMap: Map<String, Any>) {
-        var isPojo = true
-        for (value in updateMap.values) {
-            if (value is Map<*, *> || value is List<*>) {
-                isPojo = false
-                break
-            }
+        val isPojo = !updateMap.values.any { value ->
+            value is Map<*, *> || value is List<*>
         }
-        if(isPojo) collectionRef.document(eid)
-            .update(updateMap)
-            .addOnFailureListener{ e -> throw Exception("Failed to update document $eid: $e")}
+        if(isPojo) {
+            collectionRef.document(eid)
+                .update(updateMap)
+                .addOnFailureListener { e -> throw Exception("Failed to update document $eid: $e") }
+        }
         else throw Exception("Cannot update with invalid pojo object")
     }
 
@@ -124,9 +119,6 @@ class EventManager(val user: User) : Database.Events {
 
         return Event(eid, ownerId, title, description, timeFrame, location, participants)
     }
-
-
-
 
     fun addSampleEvent(){
         val event = getSampleEvent()

@@ -5,19 +5,21 @@ import com.example.tea.user.event.Event
 interface Database {
     interface Users {
         data class UserData(
+            val uid: String,
             val nick: String,
-            val lastSeen: String,   // timestamp
+            val lastSeen: String,
             val lastLong: Double,
             val lastLat: Double,
             val events: Map<String, Boolean>,
             val invitations: Map<String, Int>,
             val friends: Map<String, String>
-        )
-
-        fun getUser(uid: String): UserData?
-        fun addUser(uid: String, user: UserData)
-        fun updateUser(uid: String, user: UserData)
-        fun deleteUser(uid: String)
+        ) {
+            constructor() : this("", "", "", 0.0, 0.0, emptyMap(), emptyMap(), emptyMap() ) // required by Firebase
+        }
+        fun getUserData(callback: (user: UserData?) -> Unit)
+        fun addUser(user: UserData)
+        fun updateUser(updateMap: Map<String, Any>)
+        fun deleteUser()
     }
 
     interface Events {
@@ -33,7 +35,7 @@ interface Database {
             val lat: Double = 0.0,
             val participants: Map<String, Int> = emptyMap()
         ){
-            constructor() : this("","", "", "", "", "", "", 0.0, 0.0, emptyMap())
+            constructor() : this("","", "", "", "", "", "", 0.0, 0.0, emptyMap())   // required by Firebase
         }
 
         fun getEvent(eid: String, callback: (event: Event?) -> Unit)
