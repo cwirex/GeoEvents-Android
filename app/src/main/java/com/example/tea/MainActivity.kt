@@ -1,6 +1,6 @@
 package com.example.tea
 
-import EventAdapter
+import com.example.tea.adapters.EventAdapter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log

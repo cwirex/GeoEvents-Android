@@ -1,3 +1,5 @@
+package com.example.tea.adapters
+
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tea.Event
 import com.example.tea.R
+import com.example.tea.adapters.viewHolders.EventViewHolder
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -14,13 +17,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException
 
 class EventAdapter(
     options: FirestoreRecyclerOptions<Event>
-) : FirestoreRecyclerAdapter<Event, EventAdapter.EventViewHolder>(options) {
+) : FirestoreRecyclerAdapter<Event, EventViewHolder>(options) {
     private var isOnline = true
-
-    class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvEventTitle: TextView = itemView.findViewById(R.id.tvEventTitle)
-        val cbDone: CheckBox = itemView.findViewById(R.id.cbDone)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
