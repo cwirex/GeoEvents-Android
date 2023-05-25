@@ -6,7 +6,7 @@ import com.example.tea.user.User
 class InvitationManager(val user: User) {
     private val invitations: MutableMap<String, Invitation> = mutableMapOf()
 
-    //TODO: fetch, send to DB
+    //TODO Create new && Send invitations to db
 
     fun getPendingInvitations(): HashMap<String, Invitation.Pending>{
         val pending = HashMap<String, Invitation.Pending>()
@@ -30,5 +30,33 @@ class InvitationManager(val user: User) {
 
     fun getEventInvitations(): HashMap<String, Invitation> {
         return HashMap(invitations)
+    }
+
+    fun updateInvitations(invitationsInfo: Map<String, Int>) {
+        invitationsInfo.forEach{(iid, statusCode) ->
+            var inv: Invitation? = null
+            when(statusCode){
+                Invitation.Status.Pending.ordinal -> {
+                    inv = Invitation.Pending(iid)
+                }
+                Invitation.Status.Accepted.ordinal -> {
+                    inv = Invitation.Accepted(iid)
+                }
+                Invitation.Status.Expired.ordinal -> {
+                    inv = Invitation.Expired(iid)
+                }
+                Invitation.Status.Rejected.ordinal -> {
+                    inv = Invitation.Rejected(iid)
+                }
+            }
+            if(inv != null) {
+                invitations[iid] = inv
+                user.eventManager.getEvent(iid){
+                    if(it != null){
+                        invitations[iid]?.event = it
+                    }
+                }
+            }
+        }
     }
 }

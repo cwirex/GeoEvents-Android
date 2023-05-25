@@ -1,12 +1,9 @@
 package com.example.tea.user.event
-import android.nfc.FormatException
 import com.example.tea.user.Database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.example.tea.user.User
 import com.example.tea.user.model.Marker
-import com.google.android.gms.tasks.OnFailureListener
 import java.time.LocalDateTime
-import java.util.*
 import kotlin.collections.HashMap
 
 /** Holds user's events and manages them */
@@ -14,25 +11,30 @@ class EventManager(val user: User) : Database.Events {
     private val collectionRef = FirebaseFirestore.getInstance().collection("events")
     private val userRef = FirebaseFirestore.getInstance().collection("users").document(user.getId())
     private val events: MutableMap<String, Event> = mutableMapOf()
+
+    /** Returns event, if it isn't in collection fetches from db */
     override fun getEvent(eid: String, callback: (event: Event?) -> Unit) {
-        collectionRef.document(eid)
-            .get()
-            .addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    val eventData = documentSnapshot.toObject(Database.Events.EventData::class.java)
-                    if (eventData != null) {
-                        val event = mapToEvent(eventData)
-                        callback(event)
+        if(events.containsKey(eid)){
+            callback(events[eid])
+        }
+        else {
+            collectionRef.document(eid)
+                .get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        val eventData =
+                            documentSnapshot.toObject(Database.Events.EventData::class.java)
+                        if (eventData != null) {
+                            val event = mapToEvent(eventData)
+                            callback(event)
+                        }
                     }
                 }
-            }
-            .addOnFailureListener { exception ->
-                // Error fetching document
-                // Handle the exception
-                callback(null)
-            }
-
-
+                .addOnFailureListener { _ ->
+                    callback(null)
+                    // TODO Throw exception or pass?
+                }
+        }
 
     }
 
@@ -71,7 +73,7 @@ class EventManager(val user: User) : Database.Events {
             .addOnFailureListener { e -> throw Exception("Failed to delete document $eid: $e") }
     }
 
-    fun getSampleEvent(): Event{
+    private fun getSampleEvent(): Event{
         return Event(
             eid = "",
             ownerId = "owner-id",
@@ -128,6 +130,17 @@ class EventManager(val user: User) : Database.Events {
 
     fun getUserEvents(): HashMap<String, Event> {
         return HashMap(events)
+    }
+
+    /** Load events provided in a list by eventsInfo (from user's profile) */
+    fun updateEvents(eventsInfo: Map<String, Boolean>) {
+        eventsInfo.forEach{ (eid, isOwner) ->
+            getEvent(eid) { event: Event? ->
+                if (event != null) {
+                    this.events[eid] = event
+                }
+            }
+        }
     }
 
 }

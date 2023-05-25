@@ -12,11 +12,11 @@ interface Database {
             val lastLat: Double,
             val events: Map<String, Boolean>,
             val invitations: Map<String, Int>,
-            val friends: Map<String, String>
+            val friends: Map<String, String>    //todo: what to hold in here? <id, id> ?
         ) {
             constructor() : this("", "", "", 0.0, 0.0, emptyMap(), emptyMap(), emptyMap() ) // required by Firebase
         }
-        fun getUserData(callback: (user: UserData?) -> Unit)
+        fun getUserData(uid: String? = null, callback: (user: UserData?) -> Unit)
         fun addUser(user: UserData)
         fun updateUser(updateMap: Map<String, Any>)
         fun deleteUser()
