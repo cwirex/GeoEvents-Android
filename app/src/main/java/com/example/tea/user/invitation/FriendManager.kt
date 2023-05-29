@@ -7,16 +7,16 @@ import java.time.LocalDateTime
 
 /** Holds user's friends and manages them */
 class FriendManager(val user: User) {
-
-    //TODO add friends
-
     private val friends: MutableMap<String, Friend> = mutableMapOf()
+
+
     fun getUserFriends(): HashMap<String, Friend> {
         return HashMap(friends)
     }
 
     fun updateFriends(friendsInfo: Map<String, String>) {
         friendsInfo.forEach{(fid, _) ->
+            friends[fid] = Friend(fid)
             user.userManager.getUserData(fid){
                 if(it != null){
                     friends[fid] = Friend(
@@ -29,10 +29,13 @@ class FriendManager(val user: User) {
                                 long=it.lastLong)
                         )
                     )
-                } else {
-                    friends[fid] = Friend(fid)
                 }
             }
         }
+    }
+
+    fun addFriend(friend: Friend) {
+        friends[friend.id] = friend
+        //TODO send friend to DB, fetch nickname and last status
     }
 }

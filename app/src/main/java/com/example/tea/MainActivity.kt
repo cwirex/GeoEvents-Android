@@ -3,11 +3,13 @@ package com.example.tea
 import EventAdapter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tea.databinding.ActivityMainBinding
+import com.example.tea.user.Database
 import com.example.tea.user.User
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -65,6 +67,26 @@ class MainActivity : AppCompatActivity() {
         val uid = FirebaseAuth.getInstance().uid
         if (uid != null){
             val user = User(uid)
+            val manager = user.userManager
+            manager.makeSampleUser()
+            manager.addUser()
+            val userDb = User(uid)
+            val manager2 = userDb.userManager
+            manager2.getUserData { userData: Database.Users.UserData? ->
+                if(userData != null){
+                    manager2.updateUserFields(userData)
+                    Toast.makeText(this@MainActivity, "nick: " + userDb.nickname, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "events: " + userDb.eventManager.getUserEvents().toString(), Toast.LENGTH_LONG)
+                        .show()    // todo: make async call (events are updated asynchronously)
+                    Toast.makeText(this@MainActivity, "friends: " + userDb.friendManager.getUserFriends().toString(), Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@MainActivity, "invs: " + userDb.invitationManager.getEventInvitations().toString(), Toast.LENGTH_LONG).show()
+                }
+            }
+//            userDb.eventManager.getEvent("5hY21038306711"){
+//                if(it != null){
+//                    Toast.makeText(this@MainActivity, "EVENT: $it",Toast.LENGTH_LONG).show()
+//                }
+//            }
 //            val eid = user.eventManager.addEvent(user.eventManager.getSampleEvent())
 //            Toast.makeText(this@MainActivity, "Added event $eid to DB", Toast.LENGTH_SHORT).show()
 //

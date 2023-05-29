@@ -29,24 +29,27 @@ class EventManager(val user: User) : Database.Events {
                             callback(event)
                         }
                     }
+                    else callback(null)
                 }
-                .addOnFailureListener { _ ->
+                .addOnFailureListener {
                     callback(null)
                     // TODO Throw exception or pass?
                 }
         }
-
     }
 
-/** Sends Event to db. If eid is empty, generates it in-place.
+/** Sends Event to db and adds it to list.
+ * If eid is empty, generates it in-place.
  * Returns event id */
     fun addEvent(event: Event): String{
         if(event.eid == "")
             event.eid = "${user.getId().drop(user.getId().length-4)}${LocalDateTime.now().hashCode()}"
         addEvent(event.eid, mapToPojo(event))
+        this.events[event.eid] = event
         return event.eid
     }
 
+    /** Transfers eventData to DB */
     override fun addEvent(eid: String, event: Database.Events.EventData) {
         collectionRef.document(eid)
             .set(event)
@@ -55,6 +58,7 @@ class EventManager(val user: User) : Database.Events {
             }
     }
 
+    /** Updates event on DB (based on update map)*/
     override fun updateEvent(eid: String, updateMap: Map<String, Any>) {
         val isPojo = !updateMap.values.any { value ->
             value is Map<*, *> || value is List<*>
@@ -67,16 +71,19 @@ class EventManager(val user: User) : Database.Events {
         else throw Exception("Cannot update with invalid pojo object")
     }
 
+    /** Removes event from DB and local list */
     override fun deleteEvent(eid: String) {
+        events.remove(eid)  //safe
         collectionRef.document(eid)
             .delete()
             .addOnFailureListener { e -> throw Exception("Failed to delete document $eid: $e") }
     }
 
-    private fun getSampleEvent(): Event{
+    /** Generates sample event*/
+    fun getSampleEvent(): Event{
         return Event(
             eid = "",
-            ownerId = "owner-id",
+            ownerId = user.getId(),
             title = "Sample Event",
             description = "This is a sample event",
             timeFrame = TimeFrame(LocalDateTime.now(), LocalDateTime.now()),
@@ -85,6 +92,7 @@ class EventManager(val user: User) : Database.Events {
         )
     }
 
+    /** Maps Event to EventData */
     private fun mapToPojo(event: Event): Database.Events.EventData {
         return Database.Events.EventData(
             eid = event.eid,
@@ -102,6 +110,7 @@ class EventManager(val user: User) : Database.Events {
         )
     }
 
+    /** Maps EventData to Event */
     private fun mapToEvent(eventData: Database.Events.EventData): Event {
         val eid = eventData.eid
         val ownerId = eventData.owner
@@ -123,11 +132,7 @@ class EventManager(val user: User) : Database.Events {
         return Event(eid, ownerId, title, description, timeFrame, location, participants)
     }
 
-    fun addSampleEvent(){
-        val event = getSampleEvent()
-        addEvent(event)
-    }
-
+    /** Returns user events from local list*/
     fun getUserEvents(): HashMap<String, Event> {
         return HashMap(events)
     }

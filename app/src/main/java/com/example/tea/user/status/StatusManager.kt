@@ -22,4 +22,9 @@ class StatusManager(val user: User) {
     fun getLastStatus(): Status? {
         return statuses.lastOrNull()
     }
+
+    fun updateStatus(status: Status) {
+        statuses.add(status)
+        //TODO update DB when time elapsed (or position changed)
+    }
 }
