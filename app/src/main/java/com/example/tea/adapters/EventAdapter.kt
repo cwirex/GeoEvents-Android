@@ -3,7 +3,7 @@ package com.example.tea.adapters
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.example.tea.Event
+import com.example.tea.Sample
 import com.example.tea.R
 
 import com.example.tea.adapters.viewHolders.EventViewHolder
@@ -13,8 +13,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException
 
 
 class EventAdapter(
-    options: FirestoreRecyclerOptions<Event>
-) : FirestoreRecyclerAdapter<Event, EventViewHolder>(options) {
+    options: FirestoreRecyclerOptions<Sample>
+) : FirestoreRecyclerAdapter<Sample, EventViewHolder>(options) {
     private var isOnline = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
@@ -26,7 +26,7 @@ class EventAdapter(
         return EventViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: EventViewHolder, position: Int, model: Event) {
+    override fun onBindViewHolder(holder: EventViewHolder, position: Int, model: Sample) {
         holder.tvEventTitle.text = model.title
         holder.cbDone.isChecked = model.checked
         holder.cbDone.setOnClickListener {
@@ -48,8 +48,8 @@ class EventAdapter(
         var itemsDeleted = 0
         for (i in 0 until itemCount) {
             val snapshot = snapshots.getSnapshot(i)
-            val event = snapshot.toObject(Event::class.java)
-            if (event?.checked == true) {
+            val sample = snapshot.toObject(Sample::class.java)
+            if (sample?.checked == true) {
                 snapshot.reference.delete()
                 itemsDeleted += 1
             }

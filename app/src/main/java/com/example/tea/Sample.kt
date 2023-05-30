@@ -1,5 +1,5 @@
 package com.example.tea
-data class Event(
+data class Sample(
     var timestamp: String = "",
     var title: String = "",
     var checked: Boolean = false

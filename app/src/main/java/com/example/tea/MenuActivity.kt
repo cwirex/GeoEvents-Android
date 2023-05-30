@@ -13,11 +13,11 @@ class MenuActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        replaceFragment(EventsMenuFragment())
+        replaceFragment(SampleMenuFragment())
 
         binding.bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId) {
-                R.id.menu_events -> replaceFragment(EventsMenuFragment())
+                R.id.menu_events -> replaceFragment(SampleMenuFragment())
                 R.id.menu_map -> replaceFragment(MapFragment())
                 R.id.menu_friends -> replaceFragment(FriendsMenuFragment())
 

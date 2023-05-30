@@ -38,7 +38,7 @@ class EventManager(val user: User) : Database.Events {
         }
     }
 
-/** Sends Event to db and adds it to list.
+/** Sends Sample to db and adds it to list.
  * If eid is empty, generates it in-place.
  * Returns event id */
     fun addEvent(event: Event): String{
@@ -84,7 +84,7 @@ class EventManager(val user: User) : Database.Events {
         return Event(
             eid = "",
             ownerId = user.getId(),
-            title = "Sample Event",
+            title = "Sample Sample",
             description = "This is a sample event",
             timeFrame = TimeFrame(LocalDateTime.now(), LocalDateTime.now()),
             location = Location("Sample Location", Marker(0.0, 0.0)),
@@ -92,7 +92,7 @@ class EventManager(val user: User) : Database.Events {
         )
     }
 
-    /** Maps Event to EventData */
+    /** Maps Sample to EventData */
     private fun mapToPojo(event: Event): Database.Events.EventData {
         return Database.Events.EventData(
             eid = event.eid,
@@ -110,7 +110,7 @@ class EventManager(val user: User) : Database.Events {
         )
     }
 
-    /** Maps EventData to Event */
+    /** Maps EventData to Sample */
     private fun mapToEvent(eventData: Database.Events.EventData): Event {
         val eid = eventData.eid
         val ownerId = eventData.owner
