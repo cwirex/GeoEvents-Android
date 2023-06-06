@@ -1,10 +1,13 @@
 package com.example.tea.user
 
+import com.example.tea.user.event.Event
 import com.example.tea.user.invitation.Friend
+import com.example.tea.user.invitation.Invitation
 import com.example.tea.user.model.Marker
 import com.example.tea.user.status.Status
 import com.google.firebase.firestore.FirebaseFirestore
 import java.time.LocalDateTime
+import java.util.concurrent.CompletableFuture
 
 /** Provides interface for User with simplified actions */
 class UserManager internal constructor(val user: User) : Database.Users {
@@ -86,29 +89,54 @@ class UserManager internal constructor(val user: User) : Database.Users {
         val lastPosition = user.getPosition()
         val lastLong = lastPosition?.long ?: 0.0
         val lastLat = lastPosition?.lat ?: 0.0
-        val events: Map<String, Boolean> = user.getEvents()
-            .mapValues { entry -> entry.value.ownerId == uid }
-        val invitations: Map<String, Int> = user.getInvitations()
-            .mapValues { entry -> entry.value.getStatus().ordinal }
 
-        user.getFriends { friends ->
-            val mappedFriends: Map<String, String> = friends?.mapValues { entry ->
-                entry.key
-            } ?: emptyMap()
-            val userData = Database.Users.UserData(
-                uid = uid,
-                nick = nick,
-                lastSeen = lastSeen,
-                lastLong = lastLong,
-                lastLat = lastLat,
-                events = events,
-                invitations = invitations,
-                friends = mappedFriends
-            )
-            callback(userData)
+
+        val eventsFuture = CompletableFuture.supplyAsync {
+            val future = CompletableFuture<Map<String, Boolean>>()
+            user.getEvents { eventMap: Map<String, Event>? ->
+                val events: Map<String, Boolean> =
+                    eventMap?.mapValues { entry -> entry.value.ownerId == uid } ?: emptyMap()
+                future.complete(events)
+            }
+            future.get()
         }
-    }
 
+        val invitationsFuture = CompletableFuture.supplyAsync {
+            val future = CompletableFuture<Map<String, Int>>()
+            user.getInvitations { invitationMap: Map<String, Invitation>? ->
+                val invitations: Map<String, Int> =
+                    invitationMap?.mapValues { entry -> entry.value.getStatus().ordinal }
+                        ?: emptyMap()
+                future.complete(invitations)
+            }
+            future.get()
+        }
+
+        val friendsFuture = CompletableFuture.supplyAsync {
+            val future = CompletableFuture<Map<String, String>>()
+            user.getFriends { friends ->
+                val mappedFriends: Map<String, String> =
+                    friends?.mapValues { entry -> entry.key } ?: emptyMap()
+                future.complete(mappedFriends)
+            }
+            future.get()
+        }
+
+        CompletableFuture.allOf(eventsFuture, invitationsFuture, friendsFuture).join()
+
+        val userData = Database.Users.UserData(
+            uid = uid,
+            nick = nick,
+            lastSeen = lastSeen,
+            lastLong = lastLong,
+            lastLat = lastLat,
+            events = eventsFuture.get(),
+            invitations = invitationsFuture.get(),
+            friends = friendsFuture.get()
+        )
+
+        callback(userData)
+    }
 
     /** Fetches user data and updates User fields*/
     fun fetchAndUpdateUser() {

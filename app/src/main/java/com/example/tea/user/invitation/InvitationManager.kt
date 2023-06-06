@@ -28,8 +28,9 @@ class InvitationManager(val user: User) {
         return accepted
     }
 
-    fun getEventInvitations(): HashMap<String, Invitation> {
-        return HashMap(invitations)
+    fun getEventInvitations(callback: (Map<String, Invitation>?) -> Unit){
+        callback(null)
+        TODO("IMPLEMENT")
     }
 
     fun updateInvitations(invitationsInfo: Map<String, Int>) {

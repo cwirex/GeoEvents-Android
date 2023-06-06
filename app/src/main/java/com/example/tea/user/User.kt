@@ -21,21 +21,19 @@ class User(private val id: String) {
 
     // TODO define usefull functions (other can be reached directly from managers)
     fun getId(): String {return this.id}
-    fun getEvents(): HashMap<String, Event>{
-        return this.eventManager.getUserEvents()
+    fun getEvents(callback: (Map<String, Event>?) -> Unit){
+        this.eventManager.getUserEvents(callback)
     }
 
     fun getPosition(): Marker? {
         return this.statusManager.getLastPosition()
     }
 
-    fun getInvitations(): HashMap<String, Invitation> {
-        return this.invitationManager.getEventInvitations()
+    fun getInvitations(callback: (Map<String, Invitation>?) -> Unit) {
+        this.invitationManager.getEventInvitations(callback)
     }
 
     fun getFriends(callback: (Map<String, Friend>?) -> Unit) {
-        friendManager.getUserFriends { friends ->
-            callback(friends)
-        }
+        friendManager.getUserFriends(callback)
     }
 }
