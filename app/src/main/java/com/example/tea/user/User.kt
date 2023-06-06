@@ -24,15 +24,18 @@ class User(private val id: String) {
     fun getEvents(): HashMap<String, Event>{
         return this.eventManager.getUserEvents()
     }
-    fun getPosition(): Marker?{
+
+    fun getPosition(): Marker? {
         return this.statusManager.getLastPosition()
     }
 
-    fun getInvitations(): HashMap<String, Invitation>{
+    fun getInvitations(): HashMap<String, Invitation> {
         return this.invitationManager.getEventInvitations()
     }
 
-    fun getFriends(): HashMap<String, Friend>{
-        return this.friendManager.getUserFriends()
+    fun getFriends(callback: (Map<String, Friend>?) -> Unit) {
+        friendManager.getUserFriends { friends ->
+            callback(friends)
+        }
     }
 }
