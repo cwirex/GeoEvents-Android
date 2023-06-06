@@ -1,8 +1,15 @@
 package com.example.tea.user.event
+import android.util.Log
 import com.example.tea.user.Database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.example.tea.user.User
 import com.example.tea.user.model.Marker
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.ktx.Firebase
 import java.time.LocalDateTime
 import kotlin.collections.HashMap
 
@@ -10,14 +17,18 @@ import kotlin.collections.HashMap
 class EventManager(val user: User) : Database.Events {
     private val collectionRef = FirebaseFirestore.getInstance().collection("events")
     private val userRef = FirebaseFirestore.getInstance().collection("users").document(user.getId())
-    private val events: MutableMap<String, Event> = mutableMapOf()
+    private var events: MutableMap<String, Event>? = null
+    private var eventsInfo: Map<String, Boolean>? = null
+
+    companion object {
+        private const val TAG = "EventManager"
+    }
 
     /** Returns event, if it isn't in collection fetches from db */
     override fun getEvent(eid: String, callback: (event: Event?) -> Unit) {
-        if(events.containsKey(eid)){
-            callback(events[eid])
-        }
-        else {
+        if (events?.containsKey(eid) == true) {
+            callback(events!![eid])
+        } else {
             collectionRef.document(eid)
                 .get()
                 .addOnSuccessListener { documentSnapshot ->
@@ -28,8 +39,7 @@ class EventManager(val user: User) : Database.Events {
                             val event = mapToEvent(eventData)
                             callback(event)
                         }
-                    }
-                    else callback(null)
+                    } else callback(null)
                 }
                 .addOnFailureListener {
                     callback(null)
@@ -38,14 +48,16 @@ class EventManager(val user: User) : Database.Events {
         }
     }
 
-/** Sends Sample to db and adds it to list.
- * If eid is empty, generates it in-place.
- * Returns event id */
-    fun addEvent(event: Event): String{
-        if(event.eid == "")
-            event.eid = "${user.getId().drop(user.getId().length-4)}${LocalDateTime.now().hashCode()}"
+    /** Sends Sample to db and adds it to list.
+     * If eid is empty, generates it in-place.
+     * Returns event id */
+    fun addEvent(event: Event): String {
+        if (event.eid == "")
+            event.eid =
+                "${user.getId().drop(user.getId().length - 4)}${LocalDateTime.now().hashCode()}"
         addEvent(event.eid, mapToPojo(event))
-        this.events[event.eid] = event
+        if (events != null) this.events!![event.eid] = event
+        else events = mutableMapOf(event.eid to event)
         return event.eid
     }
 
@@ -73,7 +85,7 @@ class EventManager(val user: User) : Database.Events {
 
     /** Removes event from DB and local list */
     override fun deleteEvent(eid: String) {
-        events.remove(eid)  //safe
+        events?.remove(eid)  //safe
         collectionRef.document(eid)
             .delete()
             .addOnFailureListener { e -> throw Exception("Failed to delete document $eid: $e") }
@@ -132,20 +144,68 @@ class EventManager(val user: User) : Database.Events {
         return Event(eid, ownerId, title, description, timeFrame, location, participants)
     }
 
-    /** Returns user events from local list*/
-    fun getUserEvents(): HashMap<String, Event> {
-        return HashMap(events)
+    /** Returns user events in a callback */
+    fun getUserEvents(callback: (Map<String, Event>?) -> Unit) {
+        if (events != null) callback(events!!.toMap())    // if events are already fetched
+        else fetchAndUpdateUserEvents(callback)
     }
 
-    /** Load events provided in a list by eventsInfo (from user's profile) */
-    fun updateEvents(eventsInfo: Map<String, Boolean>) {
-        eventsInfo.forEach{ (eid, isOwner) ->
-            getEvent(eid) { event: Event? ->
-                if (event != null) {
-                    this.events[eid] = event
+    private fun fetchAndUpdateUserEvents(callback: (Map<String, Event>?) -> Unit) {
+        if (eventsInfo == null) {
+            getInfoAndUpdateUserEvents(callback)
+        } else {
+            val eventIds = eventsInfo!!.keys.toList()
+            val events = mutableMapOf<String, Event>()
+
+            val firestore = Firebase.firestore
+            val fetchTasks = mutableListOf<Task<DocumentSnapshot>>()
+
+            for (eventId in eventIds) {
+                val fetchTask = firestore.collection("events")
+                    .document(eventId)
+                    .get()
+
+                fetchTasks.add(fetchTask)
+            }
+
+            Tasks.whenAllComplete(fetchTasks)
+                .addOnSuccessListener { taskList ->
+                    for (task in taskList) {
+                        if (task.isSuccessful) {
+                            val document = task.result as DocumentSnapshot
+                            val eventData = document.toObject(Database.Events.EventData::class.java)
+
+                            eventData?.let { event ->
+                                val eventObj = mapToEvent(event)
+                                events[event.eid] = eventObj
+                            }
+                        }
+                    }
+
+                    callback(events)
                 }
+                .addOnFailureListener { exception ->
+                    Log.e(TAG, "fetchAndUpdateUserEvents: $exception")
+                    callback(null)
+                }
+        }
+    }
+
+    private fun getInfoAndUpdateUserEvents(callback: (Map<String, Event>?) -> Unit) {
+        user.userManager.getUserData { userData: Database.Users.UserData? ->
+            if (userData == null) {
+                callback(null)
+            } else {
+                this.eventsInfo = userData.events.toMap()
+                fetchAndUpdateUserEvents(callback)
             }
         }
     }
+
+    fun setEventsInfo(eventsInfo: Map<String, Boolean>) {
+        this.eventsInfo = eventsInfo.toMap()
+        fetchAndUpdateUserEvents { }
+    }
+
 
 }

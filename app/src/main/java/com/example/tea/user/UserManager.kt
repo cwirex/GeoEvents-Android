@@ -122,7 +122,7 @@ class UserManager internal constructor(val user: User) : Database.Users {
     /** Updates User based with fetched userData*/
     fun updateUserFields(userData: Database.Users.UserData) {
         user.nickname = userData.nick
-        user.eventManager.updateEvents(userData.events)
+        user.eventManager.setEventsInfo(userData.events)
         user.friendManager.updateFriends(userData.friends)
         user.invitationManager.updateInvitations(userData.invitations)
     }

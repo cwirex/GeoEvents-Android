@@ -85,9 +85,12 @@ class SampleActivity : AppCompatActivity() {
                 if(userData != null){
                     manager2.updateUserFields(userData)
                     Toast.makeText(this@SampleActivity, "nick: " + userDb.nickname, Toast.LENGTH_SHORT).show()
-                    Toast.makeText(this@SampleActivity, "events: " + userDb.eventManager.getUserEvents().toString(), Toast.LENGTH_LONG)
-                        .show()    // todo: make async call (events are updated asynchronously)
-                    Toast.makeText(this@SampleActivity, "friends: " + userDb.friendManager.getUserFriends().toString(), Toast.LENGTH_LONG).show()
+                    userDb.eventManager.getUserEvents {
+                        Toast.makeText(this@SampleActivity, "events: $it", Toast.LENGTH_LONG).show()
+                    }
+                    userDb.friendManager.getUserFriends {
+                        Toast.makeText(this@SampleActivity, "friends: $it", Toast.LENGTH_LONG).show()
+                    }
                     Toast.makeText(this@SampleActivity, "invs: " + userDb.invitationManager.getEventInvitations().toString(), Toast.LENGTH_LONG).show()
                 }
             }

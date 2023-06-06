@@ -4,6 +4,8 @@ import android.util.Log
 import com.example.tea.user.User
 import com.example.tea.user.model.Marker
 import com.example.tea.user.status.Status
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.time.LocalDateTime
@@ -38,17 +40,19 @@ class FriendManager(val user: User) {
     }
 
     private fun fetchFriends(callback: (Map<String, Friend>) -> Unit) {
-        user.userManager.getUserData {
-            if (it != null) {
-                var keysLeft = it.friends.keys.size
-                it.friends.keys.forEach { fid ->
-                    fetchFriend(fid) {
+        user.userManager.getUserData { it ->
+            it?.let {
+                val keys = it.friends.keys.toList()
+                var keysLeft = keys.size
+                keys.forEach { fid ->
+                    fetchFriend(fid) { friend ->
+                        if (friend != null)
+                            friends[fid] = friend
                         keysLeft -= 1
                         if (keysLeft <= 0) callback(friends.toMap())
                     }
                 }
             }
-
         }
     }
 
@@ -128,9 +132,8 @@ class FriendManager(val user: User) {
                 val marker = Marker(it.lastLat, it.lastLong)
                 val status = Status(time, marker)
                 val friend = Friend(fid, status = status)
-                friends[fid] = friend   // update local friend
                 callback(friend)
-            }
+            } else callback(null)
         }
     }
 }
