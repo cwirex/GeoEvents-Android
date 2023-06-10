@@ -27,7 +27,7 @@ class InvitationManager(val user: User) {
     }
 
     /** Sends invitation (creates link) on Event.participants and User.invitations */
-    private fun sendInvitation(eid: String, uid: String, status: Invitation.Status) {
+    fun sendInvitation(eid: String, uid: String, status: Invitation.Status) {
         user.eventManager.updateEvent(eid, mapOf("participants.${uid}" to status.ordinal))
         user.userManager.updateUser(uid, mapOf("invitations.$eid" to status.ordinal))
     }

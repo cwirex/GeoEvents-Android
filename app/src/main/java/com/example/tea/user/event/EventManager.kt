@@ -219,5 +219,33 @@ class EventManager(val user: User) : Database.Events {
         fetchAndUpdateUserEvents { }
     }
 
+    fun notifyEventStatusChanged(eid: String, status: Invitation.Status) {
+        if (events?.containsKey(eid) == true) {
+            events!![eid]?.participants?.get(user.getId())?.status = status
+        } else {
+            getInfoAndUpdateUserEvents {//suboptimal
+                // TODO: onStatusChanged() -> update ui.events ?
+            }
+        }
+
+        /* old
+        else {
+            when(status){
+                Invitation.Status.REJECTED -> {
+                    getInfoAndUpdateUserEvents {  }
+                }
+                Invitation.Status.ACCEPTED -> {
+                    getInfoAndUpdateUserEvents {  }
+                }
+                Invitation.Status.EXPIRED -> {
+                    getInfoAndUpdateUserEvents {  } //suboptimal...
+                }
+                else -> {throw Exception("Exception on EventManager.notifyEventStatusChanged($eid, ${status.name})")}
+            }
+        }
+         */
+
+    }
+
 
 }

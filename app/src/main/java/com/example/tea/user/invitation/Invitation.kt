@@ -21,13 +21,14 @@ sealed class Invitation(
 
     class Pending(eid: String) : Invitation(eid) {
         fun accept() {
-            TODO("Change inv status: on User.invitations & Event.participants")
-            TODO("Add event to user: on User.events")
-            TODO("Update events list: fetch accepted Event")
+            user.invitationManager.sendInvitation(eid, user.getId(), Status.ACCEPTED)
+            user.eventManager.notifyEventStatusChanged(eid, Status.ACCEPTED)
         }
 
         fun reject() {
-            TODO("Change inv status: on User.invitations & Event.participants")
+            user.invitationManager.sendInvitation(eid, user.getId(), Status.REJECTED)
+            user.eventManager.notifyEventStatusChanged(eid, Status.REJECTED)
+            //TODO: ? Remove event from DB.users.$uid.events ?
         }
 
         override fun getStatus(): Status {
@@ -37,9 +38,9 @@ sealed class Invitation(
 
     class Accepted(eid: String) : Invitation(eid) {
         fun resign() {
-            TODO("Change inv status: on User.invitations & Event.participants")
-            TODO("Remove event from user: on User.events")
-            TODO("Update events list: remove Event")
+            user.invitationManager.sendInvitation(eid, user.getId(), Status.REJECTED)
+            user.eventManager.notifyEventStatusChanged(eid, Status.REJECTED)
+            //TODO: ? Remove event from DB.users.$uid.events ?
         }
 
         override fun getStatus(): Status {
@@ -49,7 +50,8 @@ sealed class Invitation(
 
     class Rejected(eid: String) : Invitation(eid) {
         fun accept() {
-            TODO("Same as Pending.accept()")
+            user.invitationManager.sendInvitation(eid, user.getId(), Status.ACCEPTED)
+            user.eventManager.notifyEventStatusChanged(eid, Status.ACCEPTED)
         }
 
         override fun getStatus(): Status {

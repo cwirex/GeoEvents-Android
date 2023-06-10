@@ -26,7 +26,7 @@ data class Event(
     data class Participant(
         val uid: String,
         val nickname: String,
-        val status: Invitation.Status
+        var status: Invitation.Status
     )
 }
 
