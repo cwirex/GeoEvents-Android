@@ -48,21 +48,25 @@ class UserManager internal constructor(val user: User) : Database.Users {
 
     /** Updates DB user fields (with update map)*/
     override fun updateUser(updateMap: Map<String, Any>) {
-        val isPojo = !updateMap.values.any { value ->
-            value is Map<*, *> || value is List<*>
-        }
-        if (isPojo) {
-            userRef.update(updateMap)
-                .addOnFailureListener { e ->
-                    throw Exception("Failed to update document ${user.getId()}: $e")
-                }
-        }
+        updateUser(user.getId(), updateMap)
     }
 
     /** Deletes user from DB */
     override fun deleteUser() {
         userRef.delete()
             .addOnFailureListener { e -> throw Exception("Failed to delete user ${user.getId()}: $e") }
+    }
+
+    fun updateUser(uid: String, updateMap: Map<String, Any>) {
+        val isPojo = !updateMap.values.any { value ->
+            value is Map<*, *> || value is List<*>
+        }
+        if (isPojo) {
+            collectionRef.document(uid).update(updateMap)
+                .addOnFailureListener { e ->
+                    throw Exception("Failed to update document ${user.getId()}: $e")
+                }
+        }
     }
 
     /** Fills User fields with sample data */
