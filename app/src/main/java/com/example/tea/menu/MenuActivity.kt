@@ -1,8 +1,9 @@
-package com.example.tea
+package com.example.tea.menu
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.example.tea.R
 import com.example.tea.databinding.ActivityMenuBinding
 
 class MenuActivity : AppCompatActivity() {
