@@ -9,9 +9,6 @@ import android.view.ViewGroup
 import android.widget.Button
 
 class SampleMenuFragment : Fragment() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -20,6 +17,7 @@ class SampleMenuFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_events_menu, container, false)
         val addEventButton = view.findViewById<Button>(R.id.buttonAddEvent)
+
         addEventButton.setOnClickListener {
             val intent = Intent(activity, SampleActivity::class.java)
             startActivity(intent)
@@ -27,6 +25,5 @@ class SampleMenuFragment : Fragment() {
 
         return view
     }
-
 
 }
