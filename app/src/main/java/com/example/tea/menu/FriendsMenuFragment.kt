@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import com.example.tea.AddFriendActivity
+import com.example.tea.FriendsListActivity
 import com.example.tea.R
 
 class FriendsMenuFragment : Fragment() {
@@ -20,9 +21,15 @@ class FriendsMenuFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_friends_menu, container, false)
         val addFriendMenuButton = view.findViewById<Button>(R.id.addFriendMenuButton)
+        val friendListButton = view.findViewById<Button>(R.id.friendsListButton)
 
         addFriendMenuButton.setOnClickListener {
             val intent = Intent(activity, AddFriendActivity::class.java)
+            startActivity(intent)
+        }
+
+        friendListButton.setOnClickListener {
+            val intent = Intent(activity, FriendsListActivity::class.java)
             startActivity(intent)
         }
 
