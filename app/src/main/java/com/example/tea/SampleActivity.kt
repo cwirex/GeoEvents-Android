@@ -91,9 +91,9 @@ class SampleActivity : AppCompatActivity() {
                     userDb.friendManager.getUserFriends {
                         Toast.makeText(this@SampleActivity, "friends: $it", Toast.LENGTH_LONG).show()
                     }
-                    Toast.makeText(this@SampleActivity, "invs: " + userDb.invitationManager.getEventInvitations(
-                        callback
-                    ).toString(), Toast.LENGTH_LONG).show()
+//                    Toast.makeText(this@SampleActivity, "invs: " + userDb.invitationManager.getEventInvitations(
+//                        callback
+//                    ).toString(), Toast.LENGTH_LONG).show()
                 }
             }
             userDb.eventManager.getEvent("5hY21038306711"){
