@@ -1,5 +1,6 @@
 package com.example.tea.user.event
 
+import com.example.tea.user.invitation.Invitation
 import com.example.tea.user.model.Marker
 import java.time.LocalDateTime
 
@@ -11,7 +12,7 @@ data class Event(
     val timeFrame: TimeFrame,
     val location: Location,
     val participants: MutableMap<String, Participant>,
-){
+) {
     constructor() : this(
         "", // Provide default values for the properties
         "",
@@ -21,16 +22,11 @@ data class Event(
         Location("", Marker(0.0, 0.0)),
         mutableMapOf()
     )
+
     data class Participant(
         val uid: String,
         val nickname: String,
-        val status: ParticipantStatus
-        )
-
-    enum class ParticipantStatus{
-        PENDING,
-        ACCEPTED,
-        REJECTED
-    }
+        var status: Invitation.Status
+    )
 }
 

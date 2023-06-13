@@ -1,49 +1,67 @@
 package com.example.tea.user.invitation
 
+import com.example.tea.user.User
 import com.example.tea.user.event.Event
 
 sealed class Invitation(
-    val id: String,
-    var event: Event? = null    // TODO: czy nie lepiej przechowywać EventID?
-){
-    enum class Status{Pending, Accepted, Rejected, Expired}
+    val eid: String,
+) {
+    enum class Status { PENDING, ACCEPTED, REJECTED, EXPIRED }
+
+    companion object {
+        lateinit var user: User
+    }
+
     abstract fun getStatus(): Status
-    class Pending(id: String) :Invitation(id){
-        fun accept(){
-            //
-        }
-
-        fun reject(){
-            //
-        }
-
-        override fun getStatus(): Status {
-            return Status.Pending
+    fun getLinkedEvent(callback: (Event?) -> Unit) {
+        user.eventManager.getEvent(eid) {
+            callback(it)
         }
     }
 
-    class Accepted(id: String) :Invitation(id){
-        fun resign(){
-            //
+    class Pending(eid: String) : Invitation(eid) {
+        fun accept() {
+            user.invitationManager.sendInvitation(eid, user.getId(), Status.ACCEPTED)
+            user.eventManager.notifyEventStatusChanged(eid, Status.ACCEPTED)
+        }
+
+        fun reject() {
+            user.invitationManager.sendInvitation(eid, user.getId(), Status.REJECTED)
+            user.eventManager.notifyEventStatusChanged(eid, Status.REJECTED)
+            //TODO: ? Remove event from DB.users.$uid.events ?
         }
 
         override fun getStatus(): Status {
-            return Status.Accepted
+            return Status.PENDING
         }
     }
 
-    class Rejected(id: String) :Invitation(id){
-        fun accept(){
-            //
+    class Accepted(eid: String) : Invitation(eid) {
+        fun resign() {
+            user.invitationManager.sendInvitation(eid, user.getId(), Status.REJECTED)
+            user.eventManager.notifyEventStatusChanged(eid, Status.REJECTED)
+            //TODO: ? Remove event from DB.users.$uid.events ?
         }
+
         override fun getStatus(): Status {
-            return Status.Rejected
+            return Status.ACCEPTED
         }
     }
 
-    class Expired(id: String) :Invitation(id){
+    class Rejected(eid: String) : Invitation(eid) {
+        fun accept() {
+            user.invitationManager.sendInvitation(eid, user.getId(), Status.ACCEPTED)
+            user.eventManager.notifyEventStatusChanged(eid, Status.ACCEPTED)
+        }
+
         override fun getStatus(): Status {
-            return Status.Expired
+            return Status.REJECTED
+        }
+    }
+
+    class Expired(eid: String) : Invitation(eid) {
+        override fun getStatus(): Status {
+            return Status.EXPIRED
         }
     }
 }

@@ -1,8 +1,10 @@
 package com.example.tea.user.event
+
 import android.util.Log
 import com.example.tea.user.Database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.example.tea.user.User
+import com.example.tea.user.invitation.Invitation
 import com.example.tea.user.model.Marker
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -66,7 +68,7 @@ class EventManager(val user: User) : Database.Events {
         collectionRef.document(eid)
             .set(event)
             .addOnFailureListener { e ->
-               throw Exception("Exception on addEvent for $eid: $e")
+                throw Exception("Exception on addEvent for $eid: $e")
             }
     }
 
@@ -75,12 +77,11 @@ class EventManager(val user: User) : Database.Events {
         val isPojo = !updateMap.values.any { value ->
             value is Map<*, *> || value is List<*>
         }
-        if(isPojo) {
+        if (isPojo) {
             collectionRef.document(eid)
                 .update(updateMap)
                 .addOnFailureListener { e -> throw Exception("Failed to update document $eid: $e") }
-        }
-        else throw Exception("Cannot update with invalid pojo object")
+        } else throw Exception("Cannot update with invalid pojo object")
     }
 
     /** Removes event from DB and local list */
@@ -92,7 +93,7 @@ class EventManager(val user: User) : Database.Events {
     }
 
     /** Generates sample event*/
-    fun getSampleEvent(): Event{
+    fun getSampleEvent(): Event {
         return Event(
             eid = "",
             ownerId = user.getId(),
@@ -100,7 +101,13 @@ class EventManager(val user: User) : Database.Events {
             description = "This is a sample event",
             timeFrame = TimeFrame(LocalDateTime.now(), LocalDateTime.now()),
             location = Location("Sample Location", Marker(0.0, 0.0)),
-            participants = mutableMapOf("user-id" to Event.Participant("user-id", "user-nickname", Event.ParticipantStatus.PENDING))
+            participants = mutableMapOf(
+                "user-id" to Event.Participant(
+                    "user-id",
+                    "user-nickname",
+                    Invitation.Status.PENDING
+                )
+            )
         )
     }
 
@@ -116,7 +123,7 @@ class EventManager(val user: User) : Database.Events {
             locationName = event.location.name,
             long = event.location.position.long,
             lat = event.location.position.lat,
-            participants = event.participants.map{(k, v) ->
+            participants = event.participants.map { (k, v) ->
                 k to v.status.ordinal
             }.toMap()
         )
@@ -133,10 +140,15 @@ class EventManager(val user: User) : Database.Events {
         val locationName = eventData.locationName
         val long = eventData.long
         val lat = eventData.lat
-        val participants: MutableMap<String, Event.Participant> = eventData.participants.mapValues { (k, v) ->
-            val status = Event.ParticipantStatus.values()[v]
-            Event.Participant(k, "", status) //TODO Replace "" with the appropriate nickname value
-        }.toMutableMap()
+        val participants: MutableMap<String, Event.Participant> =
+            eventData.participants.mapValues { (k, v) ->
+                val status = Invitation.Status.values()[v]
+                Event.Participant(
+                    k,
+                    "",
+                    status
+                ) //TODO Replace "" with the appropriate nickname value
+            }.toMutableMap()
 
         val location = Location(locationName, Marker(lat, long))
         val timeFrame = TimeFrame(start, end)
@@ -205,6 +217,34 @@ class EventManager(val user: User) : Database.Events {
     fun setEventsInfo(eventsInfo: Map<String, Boolean>) {
         this.eventsInfo = eventsInfo.toMap()
         fetchAndUpdateUserEvents { }
+    }
+
+    fun notifyEventStatusChanged(eid: String, status: Invitation.Status) {
+        if (events?.containsKey(eid) == true) {
+            events!![eid]?.participants?.get(user.getId())?.status = status
+        } else {
+            getInfoAndUpdateUserEvents {//suboptimal
+                // TODO: onStatusChanged() -> update ui.events ?
+            }
+        }
+
+        /* old
+        else {
+            when(status){
+                Invitation.Status.REJECTED -> {
+                    getInfoAndUpdateUserEvents {  }
+                }
+                Invitation.Status.ACCEPTED -> {
+                    getInfoAndUpdateUserEvents {  }
+                }
+                Invitation.Status.EXPIRED -> {
+                    getInfoAndUpdateUserEvents {  } //suboptimal...
+                }
+                else -> {throw Exception("Exception on EventManager.notifyEventStatusChanged($eid, ${status.name})")}
+            }
+        }
+         */
+
     }
 
 

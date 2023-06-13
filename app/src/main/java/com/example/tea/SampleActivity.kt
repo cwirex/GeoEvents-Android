@@ -92,7 +92,7 @@ class SampleActivity : AppCompatActivity() {
                         Toast.makeText(this@SampleActivity, "friends: $it", Toast.LENGTH_LONG).show()
                     }
 //                    Toast.makeText(this@SampleActivity, "invs: " + userDb.invitationManager.getEventInvitations(
-//                        callback
+//                        TODO("AS callback")
 //                    ).toString(), Toast.LENGTH_LONG).show()
                 }
             }

@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/teal_200"
-    tools:context=".SampleMenuFragment">
+    tools:context=".menu.SampleMenuFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/eventsMenuConstraint"
@@ -17,7 +16,7 @@
             android:id="@+id/buttonAddEvent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="200dp"
+            android:layout_marginTop="68dp"
             android:text="Add Event"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
@@ -28,12 +27,23 @@
             android:id="@+id/buttonEventsList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="232dp"
+            android:layout_marginTop="200dp"
             android:text="Show Events"
             app:layout_constraintEnd_toEndOf="@+id/buttonAddEvent"
-            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="@+id/buttonAddEvent"
             app:layout_constraintTop_toTopOf="@+id/buttonAddEvent" />
+
+        <Button
+            android:id="@+id/showInvitationButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="190dp"
+            android:text="Show invitation"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonEventsList"
+            app:layout_constraintVertical_bias="0.143" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

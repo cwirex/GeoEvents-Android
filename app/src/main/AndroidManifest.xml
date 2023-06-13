@@ -20,10 +20,16 @@
             android:value="${MAP_API_KEY}"
             />
         <activity
+            android:name=".FriendsListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddFriendActivity"
+            android:exported="false" />
+        <activity
             android:name=".SampleActivity"
             android:exported="false" />
         <activity
-            android:name=".MenuActivity"
+            android:name=".menu.MenuActivity"
             android:exported="false" />
         <activity
             android:name=".ui.login.LoginActivity"

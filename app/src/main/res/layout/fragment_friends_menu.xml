@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".FriendsMenuFragment">
+    tools:context=".menu.FriendsMenuFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/eventsMenuConstraint"
@@ -12,7 +12,7 @@
         android:layout_height="match_parent">
 
         <Button
-            android:id="@+id/buttonAddFriend"
+            android:id="@+id/addFriendMenuButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="200dp"
@@ -23,15 +23,15 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/buttonFriendsList"
+            android:id="@+id/friendsListButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="232dp"
             android:text="Show Friends"
-            app:layout_constraintEnd_toEndOf="@+id/buttonAddFriend"
+            app:layout_constraintEnd_toEndOf="@+id/addFriendMenuButton"
             app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="@+id/buttonAddFriend"
-            app:layout_constraintTop_toTopOf="@+id/buttonAddFriend" />
+            app:layout_constraintStart_toStartOf="@+id/addFriendMenuButton"
+            app:layout_constraintTop_toTopOf="@+id/addFriendMenuButton" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
