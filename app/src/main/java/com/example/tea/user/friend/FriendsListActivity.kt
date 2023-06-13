@@ -1,11 +1,11 @@
-package com.example.tea
+package com.example.tea.user.friend
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tea.R
 import com.example.tea.adapters.FriendAdapter
-import com.example.tea.user.invitation.Friend
 
 class FriendsListActivity : AppCompatActivity() {
 

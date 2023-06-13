@@ -1,4 +1,4 @@
-package com.example.tea.data
+package com.example.tea.auth.login.data
 
 /**
  * A generic class that holds a value with its loading status.

@@ -1,11 +1,9 @@
-package com.example.tea.user.invitation
+package com.example.tea.user.friend
 
 import android.util.Log
 import com.example.tea.user.User
-import com.example.tea.user.model.Marker
+import com.example.tea.map.Marker
 import com.example.tea.user.status.Status
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.time.LocalDateTime
@@ -76,7 +74,7 @@ class FriendManager(val user: User) {
                             LocalDateTime.parse(it.lastSeen),
                             Marker(
                                 lat = it.lastLat,
-                                long = it.lastLong
+                                lon = it.lastLong
                             )
                         )
                     )

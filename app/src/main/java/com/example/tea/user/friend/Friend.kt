@@ -1,4 +1,4 @@
-package com.example.tea.user.invitation
+package com.example.tea.user.friend
 
 import com.example.tea.user.status.Status
 

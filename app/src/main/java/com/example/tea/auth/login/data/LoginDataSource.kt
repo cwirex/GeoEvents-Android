@@ -1,7 +1,7 @@
-package com.example.tea.data
+package com.example.tea.auth.login.data
 
 import android.util.Log
-import com.example.tea.data.model.LoggedInUser
+import com.example.tea.auth.login.data.model.LoggedInUser
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth

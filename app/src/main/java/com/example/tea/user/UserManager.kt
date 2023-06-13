@@ -1,9 +1,8 @@
 package com.example.tea.user
 
 import com.example.tea.user.event.Event
-import com.example.tea.user.invitation.Friend
 import com.example.tea.user.invitation.Invitation
-import com.example.tea.user.model.Marker
+import com.example.tea.map.Marker
 import com.example.tea.user.status.Status
 import com.google.firebase.firestore.FirebaseFirestore
 import java.time.LocalDateTime
@@ -91,7 +90,7 @@ class UserManager internal constructor(val user: User) : Database.Users {
         val nick = user.nickname
         val lastSeen = LocalDateTime.now().toString()
         val lastPosition = user.getPosition()
-        val lastLong = lastPosition?.long ?: 0.0
+        val lastLong = lastPosition?.lon ?: 0.0
         val lastLat = lastPosition?.lat ?: 0.0
 
 

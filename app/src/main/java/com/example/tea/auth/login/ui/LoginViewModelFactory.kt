@@ -1,9 +1,9 @@
-package com.example.tea.ui.login
+package com.example.tea.auth.login.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.tea.data.LoginDataSource
-import com.example.tea.data.LoginRepository
+import com.example.tea.auth.login.data.LoginDataSource
+import com.example.tea.auth.login.data.LoginRepository
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.

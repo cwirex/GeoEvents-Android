@@ -1,4 +1,4 @@
-package com.example.tea.data.model
+package com.example.tea.auth.login.data.model
 
 /**
  * Data class that captures user information for logged in users retrieved from LoginRepository

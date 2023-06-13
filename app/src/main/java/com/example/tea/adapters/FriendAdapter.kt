@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tea.R
 import com.example.tea.adapters.viewHolders.FriendViewHolder
-import com.example.tea.user.invitation.Friend
+import com.example.tea.user.friend.Friend
 
 class FriendAdapter(private val friendList: ArrayList<Friend>) : RecyclerView.Adapter<FriendViewHolder>() {
 

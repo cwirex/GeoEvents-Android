@@ -1,7 +1,7 @@
 package com.example.tea.user.status
 
 import com.example.tea.user.User
-import com.example.tea.user.model.Marker
+import com.example.tea.map.Marker
 import java.time.LocalDateTime
 
 /** Holds user's statuses and manages them */

@@ -1,11 +1,11 @@
-package com.example.tea.ui.login
+package com.example.tea.auth.login.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
-import com.example.tea.data.LoginRepository
-import com.example.tea.data.Result
+import com.example.tea.auth.login.data.LoginRepository
+import com.example.tea.auth.login.data.Result
 
 import com.example.tea.R
 

@@ -1,7 +1,7 @@
 package com.example.tea.user.event
 
 import com.example.tea.user.invitation.Invitation
-import com.example.tea.user.model.Marker
+import com.example.tea.map.Marker
 import java.time.LocalDateTime
 
 data class Event(

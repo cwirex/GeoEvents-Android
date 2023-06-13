@@ -1,4 +1,4 @@
-package com.example.tea.ui.login
+package com.example.tea.auth.login.ui
 
 /**
  * Authentication result : success (user details) or error message.

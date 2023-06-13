@@ -1,4 +1,4 @@
-package com.example.tea.ui.login
+package com.example.tea.auth.login.ui
 
 /**
  * Data validation state of the login form.

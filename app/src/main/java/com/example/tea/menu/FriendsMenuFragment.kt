@@ -7,9 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
-import com.example.tea.AddFriendActivity
-import com.example.tea.FriendsListActivity
+import com.example.tea.user.friend.AddFriendActivity
+import com.example.tea.user.friend.FriendsListActivity
 import com.example.tea.R
 
 class FriendsMenuFragment : Fragment() {

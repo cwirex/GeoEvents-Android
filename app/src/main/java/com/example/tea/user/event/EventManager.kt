@@ -5,15 +5,13 @@ import com.example.tea.user.Database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.example.tea.user.User
 import com.example.tea.user.invitation.Invitation
-import com.example.tea.user.model.Marker
+import com.example.tea.map.Marker
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import java.time.LocalDateTime
-import kotlin.collections.HashMap
 
 /** Holds user's events and manages them */
 class EventManager(val user: User) : Database.Events {
@@ -121,7 +119,7 @@ class EventManager(val user: User) : Database.Events {
             timeStart = event.timeFrame.start.toString(),
             timeEnd = event.timeFrame.end.toString(),
             locationName = event.location.name,
-            long = event.location.position.long,
+            long = event.location.position.lon,
             lat = event.location.position.lat,
             participants = event.participants.map { (k, v) ->
                 k to v.status.ordinal

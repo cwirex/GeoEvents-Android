@@ -3,7 +3,7 @@ package com.example.tea.adapters
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.example.tea.Sample
+import com.example.tea.sample.Sample
 import com.example.tea.R
 
 import com.example.tea.adapters.viewHolders.EventViewHolder

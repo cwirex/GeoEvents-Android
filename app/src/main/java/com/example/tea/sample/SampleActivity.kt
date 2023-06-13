@@ -1,4 +1,4 @@
-package com.example.tea
+package com.example.tea.sample
 
 import android.os.Bundle
 import android.util.Log

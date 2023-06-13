@@ -1,4 +1,4 @@
-package com.example.tea.menu
+package com.example.tea.map
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.tea.R
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.MarkerOptions
 
 class MapFragment : Fragment() {
 
+    lateinit var gmap: GoogleMap
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -22,13 +24,14 @@ class MapFragment : Fragment() {
             childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment
 
         supportMapFragment.getMapAsync { googleMap ->
-            googleMap.setOnMapClickListener { latLng ->
+            gmap = googleMap
+            gmap.setOnMapClickListener { latLng ->
                 val markerOptions = MarkerOptions()
                 markerOptions.position(latLng)
                 markerOptions.title("${latLng.latitude} : ${latLng.longitude}")
-                googleMap.clear()
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f))
-                googleMap.addMarker(markerOptions)
+                gmap.clear()
+                gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f))
+                gmap.addMarker(markerOptions)
             }
         }
 

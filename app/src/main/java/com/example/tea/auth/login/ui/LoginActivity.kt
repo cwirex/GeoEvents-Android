@@ -1,4 +1,4 @@
-package com.example.tea.ui.login
+package com.example.tea.auth.login.ui
 
 import android.app.Activity
 import android.content.Intent
@@ -17,7 +17,7 @@ import com.example.tea.MainActivity
 import com.example.tea.databinding.ActivityLoginBinding
 
 import com.example.tea.R
-import com.example.tea.data.LoginDataSource
+import com.example.tea.auth.login.data.LoginDataSource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase

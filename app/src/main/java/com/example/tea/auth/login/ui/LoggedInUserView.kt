@@ -1,4 +1,4 @@
-package com.example.tea.ui.login
+package com.example.tea.auth.login.ui
 
 /**
  * User details post authentication that is exposed to the UI

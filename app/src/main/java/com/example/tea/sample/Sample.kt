@@ -1,4 +1,4 @@
-package com.example.tea
+package com.example.tea.sample
 data class Sample(
     var timestamp: String = "",
     var title: String = "",

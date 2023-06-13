@@ -1,6 +1,6 @@
-package com.example.tea.data
+package com.example.tea.auth.login.data
 
-import com.example.tea.data.model.LoggedInUser
+import com.example.tea.auth.login.data.model.LoggedInUser
 
 /**
  * Class that requests authentication and user information from the remote data source and

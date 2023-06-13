@@ -2,11 +2,11 @@ package com.example.tea.user
 
 import com.example.tea.user.event.Event
 import com.example.tea.user.event.EventManager
-import com.example.tea.user.invitation.Friend
-import com.example.tea.user.invitation.FriendManager
+import com.example.tea.user.friend.Friend
+import com.example.tea.user.friend.FriendManager
 import com.example.tea.user.invitation.Invitation
 import com.example.tea.user.invitation.InvitationManager
-import com.example.tea.user.model.Marker
+import com.example.tea.map.Marker
 import com.example.tea.user.status.StatusManager
 
 /** Class responsible for providing info and all user actions (served by UserManager) */

@@ -1,11 +1,11 @@
 package com.example.tea.menu
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.example.tea.R
 import com.example.tea.databinding.ActivityMenuBinding
+import com.example.tea.map.MapFragment
 
 class MenuActivity : AppCompatActivity() {
 
