@@ -8,9 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import com.example.tea.R
-import com.example.tea.sample.SampleActivity
+import com.example.tea.sample.FriendsActivity
 
-class SampleMenuFragment : Fragment() {
+class EventsMenuFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,7 +21,7 @@ class SampleMenuFragment : Fragment() {
         val addEventButton = view.findViewById<Button>(R.id.buttonAddEvent)
 
         addEventButton.setOnClickListener {
-            val intent = Intent(activity, SampleActivity::class.java)
+            val intent = Intent(activity, FriendsActivity::class.java)
             startActivity(intent)
         }
 

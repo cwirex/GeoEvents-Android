@@ -8,18 +8,18 @@
     android:paddingEnd="8dp">
 
     <TextView
-        android:id="@+id/tvEventTitle"
+        android:id="@+id/tvFriendEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/example"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/cbDone"
+        app:layout_constraintEnd_toStartOf="@+id/cbFriendChecked"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <CheckBox
-        android:id="@+id/cbDone"
+        android:id="@+id/cbFriendChecked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
