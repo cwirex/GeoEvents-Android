@@ -2,14 +2,18 @@ package com.example.tea.menu
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.tea.R
 import com.example.tea.databinding.ActivityMenuBinding
+import com.example.tea.map.IMap
 import com.example.tea.map.MapFragment
+import com.example.tea.map.Marker
 
-class MenuActivity : AppCompatActivity() {
+class MenuActivity : AppCompatActivity(), IMap.OnLocationChangeListener {
 
     private lateinit var binding: ActivityMenuBinding
+    var currentMarker: Marker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +24,6 @@ class MenuActivity : AppCompatActivity() {
         binding.bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.menu_events -> replaceFragment(SampleMenuFragment())
-//                R.id.menu_map -> this@MenuActivity.startActivity(Intent(this@MenuActivity, MapsActivity::class.java))
                 R.id.menu_map -> replaceFragment(MapFragment())
                 R.id.menu_friends -> replaceFragment(FriendsMenuFragment())
 
@@ -39,5 +42,15 @@ class MenuActivity : AppCompatActivity() {
 
         fragmentTransaction.replace(R.id.frameLayout, fragment)
         fragmentTransaction.commit()
+    }
+
+    override fun onLocationChanged(latitude: Double, longitude: Double) {
+        currentMarker = Marker(lat = latitude, lon = longitude)
+
+        Toast.makeText(
+            this@MenuActivity,
+            "Map marker on (${currentMarker!!.lat}, ${currentMarker!!.lon})",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }
