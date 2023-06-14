@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import com.example.tea.AddEventActivity
 import com.example.tea.R
 
 class EventsMenuFragment : Fragment() {
@@ -15,13 +16,12 @@ class EventsMenuFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_events_menu, container, false)
         val addEventButton = view.findViewById<Button>(R.id.buttonAddEvent)
 
         addEventButton.setOnClickListener {
-//            val intent = Intent(activity, FriendsMenuActivity::class.java)
-//            startActivity(intent)
+            val intent = Intent(activity, AddEventActivity::class.java)
+            startActivity(intent)
         }
 
         return view
