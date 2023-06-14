@@ -3,7 +3,7 @@ package com.example.tea.adapters
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.example.tea.sample.Friend
+import com.example.tea.menu.FriendMenu
 import com.example.tea.R
 
 import com.example.tea.adapters.viewHolders.FriendViewHolder
@@ -13,8 +13,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException
 
 
 class FriendAdapter(
-    options: FirestoreRecyclerOptions<Friend>
-) : FirestoreRecyclerAdapter<Friend, FriendViewHolder>(options) {
+    options: FirestoreRecyclerOptions<FriendMenu>
+) : FirestoreRecyclerAdapter<FriendMenu, FriendViewHolder>(options) {
     private var isOnline = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
@@ -26,7 +26,7 @@ class FriendAdapter(
         return FriendViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: FriendViewHolder, position: Int, model: Friend) {
+    override fun onBindViewHolder(holder: FriendViewHolder, position: Int, model: FriendMenu) {
         holder.tvFriendEmail.text = model.email
         holder.cbFriendChecked.isChecked = model.checked
         holder.cbFriendChecked.setOnClickListener {
@@ -48,8 +48,9 @@ class FriendAdapter(
         var itemsDeleted = 0
         for (i in 0 until itemCount) {
             val snapshot = snapshots.getSnapshot(i)
-            val friend = snapshot.toObject(Friend::class.java)
+            val friend = snapshot.toObject(FriendMenu::class.java)
             if (friend?.checked == true) {
+                //TODO (snapshot.data.fid -> remove from FRIENDS MANAGER (OR SKIP?) !!! )
                 snapshot.reference.delete()
                 itemsDeleted += 1
             }

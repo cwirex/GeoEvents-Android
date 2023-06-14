@@ -1,4 +1,4 @@
-package com.example.tea.sample
+package com.example.tea.menu
 
 import android.os.Bundle
 import android.util.Log
@@ -16,14 +16,14 @@ import com.google.firebase.ktx.Firebase
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class FriendsActivity : AppCompatActivity() {
+class FriendsMenuActivity : AppCompatActivity() {
     private lateinit var friendAdapter: FriendAdapter
     private lateinit var binding: ActivityFriendsBinding
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
 
     companion object {
-        const val TAG = "FriendsActivity"
+        const val TAG = "FriendsMenuActivity"
         const val REF = "friends"    // todo <- users$uid$friends
     }
 
@@ -35,9 +35,9 @@ class FriendsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val query = db.collection(REF).orderBy("addedAt")
-        val options = FirestoreRecyclerOptions.Builder<Friend>()
-            .setQuery(query, Friend::class.java)
-            .setLifecycleOwner(this@FriendsActivity).build()
+        val options = FirestoreRecyclerOptions.Builder<FriendMenu>()
+            .setQuery(query, FriendMenu::class.java)
+            .setLifecycleOwner(this@FriendsMenuActivity).build()
         friendAdapter = FriendAdapter(options)
         binding.rvFriendItems.adapter = friendAdapter
         binding.rvFriendItems.layoutManager = LinearLayoutManager(this)
@@ -51,10 +51,11 @@ class FriendsActivity : AppCompatActivity() {
         if(friendEmail.isNotEmpty()) {
             //TODO("GET USER ID BY EMAIL")
             // if fid != null ->
+            // ADD FROM USER FRIEND MANAGER as well!!!
             val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMddHHmmssSSS"))
             val fid = ""
 
-            val friend = Friend(fid=fid, email=friendEmail, addedAt=timestamp)
+            val friend = FriendMenu(fid=fid, email=friendEmail, addedAt=timestamp)
             db.collection(REF)
                 .document(timestamp)
                 .set(friend)
@@ -69,9 +70,10 @@ class FriendsActivity : AppCompatActivity() {
     }
 
     private val deleteFriendListener = View.OnClickListener {
+        //TODO: Delete friends from FRIEND MANAGER (OR SKIP?) !!!
         val nDeleted = friendAdapter.deleteCheckedItems()
         if (nDeleted > 0){
-            Toast.makeText(this@FriendsActivity,
+            Toast.makeText(this@FriendsMenuActivity,
                 "Deleted $nDeleted item${if (nDeleted > 1) "s" else ""}",
                 Toast.LENGTH_SHORT).show()
         }
