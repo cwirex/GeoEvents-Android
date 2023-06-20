@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="76dp"
-            android:text="Fill Description"
+            android:text="Kreator nowego wydarzenia"
             android:textSize="30dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
@@ -28,15 +28,29 @@
             android:id="@+id/event_title_edit_text"
             android:layout_width="280dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="116dp"
+            android:layout_marginTop="68dp"
             android:ems="10"
+            android:hint="Nazwa wydarzenia"
             android:inputType="text"
-            android:hint="event title"
             android:textSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+        <EditText
+            android:id="@+id/event_name_edit_text"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:ems="10"
+            android:hint="Miejsce"
+            android:inputType="text"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_title_edit_text" />
 
         <EditText
             android:id="@+id/event_description_edit_text"
@@ -44,21 +58,20 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            android:hint="event description"
             android:background="@drawable/border_layout"
+            android:gravity="center"
+            android:hint="Opis (dodatkowe informacje)"
             android:inputType="text|textMultiLine"
             android:lines="8"
             android:maxLines="10"
             android:minLines="6"
             android:scrollbars="vertical"
-            android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/event_title_edit_text"
-            app:layout_constraintVertical_bias="0.214" />
-
+            app:layout_constraintTop_toBottomOf="@+id/event_name_edit_text"
+            app:layout_constraintVertical_bias="0.456" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
