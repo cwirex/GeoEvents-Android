@@ -37,10 +37,10 @@ class FriendManager(val user: User) {
             .addOnSuccessListener { callback(false) }
     }
 
-    private fun fetchFriends(callback: (Map<String, Friend>) -> Unit) {
-        user.userManager.getUserData { it ->
-            it?.let {
-                val keys = it.friends.keys.toList()
+    private fun fetchFriends(callback: (Map<String, Friend>?) -> Unit) {
+        user.userManager.getUserData { userData ->
+            if(userData != null){
+                val keys = userData.friends.keys.toList()
                 var keysLeft = keys.size
                 keys.forEach { fid ->
                     fetchFriend(fid) { friend ->
@@ -51,10 +51,11 @@ class FriendManager(val user: User) {
                     }
                 }
             }
+            else callback(null)
         }
     }
 
-    fun getUserFriends(callback: (Map<String, Friend>) -> Unit) {
+    fun getUserFriends(callback: (Map<String, Friend>?) -> Unit) {
         if (friends.isNotEmpty())
             callback(friends.toMap())
         else {

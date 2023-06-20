@@ -43,7 +43,6 @@ class EventManager(val user: User) : Database.Events {
                 }
                 .addOnFailureListener {
                     callback(null)
-                    // TODO Throw exception or pass?
                 }
         }
     }
@@ -207,6 +206,7 @@ class EventManager(val user: User) : Database.Events {
                 callback(null)
             } else {
                 this.eventsInfo = userData.events.toMap()
+                if(this.eventsInfo == null) callback(null)
                 fetchAndUpdateUserEvents(callback)
             }
         }

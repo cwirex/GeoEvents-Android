@@ -157,4 +157,25 @@ class UserManager internal constructor(val user: User) : Database.Users {
         user.friendManager.updateFriends(userData.friends)
         user.invitationManager.updateInvitations(userData.invitations)
     }
+
+    fun createDbUser(callback: (Boolean) -> Unit, id: String? = null) {
+        if (id == null) {
+            val userData = Database.Users.UserData(
+                uid = user.getId(),
+                nick = user.nickname,
+                lastSeen = LocalDateTime.now().toString(),
+                lastLong = 0.0,
+                lastLat = 0.0,
+                events = mapOf(),
+                invitations = mapOf(),
+                friends = mapOf()
+            )
+
+            userRef
+                .set(userData)
+                .addOnSuccessListener { callback(true) }
+                .addOnFailureListener { callback(false) }
+        }
+
+    }
 }

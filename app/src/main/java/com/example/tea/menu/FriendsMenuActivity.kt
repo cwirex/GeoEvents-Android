@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tea.adapters.FriendAdapter
 import com.example.tea.databinding.ActivityFriendsBinding
+import com.example.tea.user.User
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -24,7 +25,6 @@ class FriendsMenuActivity : AppCompatActivity() {
 
     companion object {
         const val TAG = "FriendsMenuActivity"
-        const val REF = "friends"    // todo <- users$uid$friends
     }
 
 
@@ -34,7 +34,7 @@ class FriendsMenuActivity : AppCompatActivity() {
         binding = ActivityFriendsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val query = db.collection(REF).orderBy("addedAt")
+        val query = db.collection("users/${auth.uid}/myfriends").orderBy("addedAt")
         val options = FirestoreRecyclerOptions.Builder<FriendMenu>()
             .setQuery(query, FriendMenu::class.java)
             .setLifecycleOwner(this@FriendsMenuActivity).build()
@@ -48,23 +48,46 @@ class FriendsMenuActivity : AppCompatActivity() {
 
     private val addFriendListener = View.OnClickListener {
         val friendEmail = binding.etFriendEmail.text.toString()
-        if(friendEmail.isNotEmpty()) {
-            //TODO("GET USER ID BY EMAIL")
-            // if fid != null ->
-            // ADD FROM USER FRIEND MANAGER as well!!!
-            val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMddHHmmssSSS"))
-            val fid = ""
+        if (friendEmail.isNotEmpty()) {
+            val uid = Firebase.auth.uid
+            if (uid != null) {
+                val user = User(uid)
+                user.friendManager.getIdByEmail(friendEmail) { ffid ->
+                    if (ffid != null) {
+                        val timestamp =
+                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMddHHmmssSSS"))
 
-            val friend = FriendMenu(fid=fid, email=friendEmail, addedAt=timestamp)
-            db.collection(REF)
-                .document(timestamp)
-                .set(friend)
-                .addOnSuccessListener { _ ->
-                    Log.d(TAG, "DocumentSnapshot added with ID: $timestamp")
+                        val friend =
+                            FriendMenu(fid = ffid, email = friendEmail, addedAt = timestamp)
+                        db.collection("users/${auth.uid}/myfriends")
+                            .document(timestamp)
+                            .set(friend)
+                            .addOnFailureListener { e ->
+                                Log.w(TAG, "Error adding document", e)
+                            }
+
+                        val thisUserAsFriend = FriendMenu(fid=user.getId(), email=auth.currentUser?.email ?: "", addedAt=timestamp)
+                        db.collection("users/${friend.fid}/myfriends")
+                            .document(timestamp)
+                            .set(thisUserAsFriend)
+                            .addOnFailureListener { e ->
+                                Log.w(TAG, "Error adding document", e)
+                            }
+
+                        if (ffid.isNotEmpty()) user.friendManager.addFriend(ffid) { maybeFriend ->
+                            if (maybeFriend != null) {
+                                Toast.makeText(
+                                    this@FriendsMenuActivity,
+                                    "Added friend successfully",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
                 }
-                .addOnFailureListener { e ->
-                    Log.w(TAG, "Error adding document", e)
-                }
+            }
+
+
             binding.etFriendEmail.text.clear()
         }
     }
@@ -72,10 +95,12 @@ class FriendsMenuActivity : AppCompatActivity() {
     private val deleteFriendListener = View.OnClickListener {
         //TODO: Delete friends from FRIEND MANAGER (OR SKIP?) !!!
         val nDeleted = friendAdapter.deleteCheckedItems()
-        if (nDeleted > 0){
-            Toast.makeText(this@FriendsMenuActivity,
+        if (nDeleted > 0) {
+            Toast.makeText(
+                this@FriendsMenuActivity,
                 "Deleted $nDeleted item${if (nDeleted > 1) "s" else ""}",
-                Toast.LENGTH_SHORT).show()
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 }

@@ -2,9 +2,11 @@ package com.example.tea.auth.login.data
 
 import android.util.Log
 import com.example.tea.auth.login.data.model.LoggedInUser
+import com.example.tea.user.User
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.io.IOException
@@ -52,6 +54,7 @@ class LoginDataSource {
                     val uid = user!!.uid
                     val displayName = getDisplayName(user)  //TODO: ASK USER FOR NICKNAME (on just registered account)
                     linkEmailToUid(username, uid)           //Create new link email -> UID
+                    User(uid).createDbAccount {  }     //Create user on DB
                     val loggedInUser = LoggedInUser(uid, displayName)
                     callback(Result.Success(loggedInUser))
                 } else {
@@ -89,7 +92,13 @@ class LoginDataSource {
         Firebase.firestore
             .collection("info")
             .document("emailToUid")
-            .set(mapOf(email to uid))
+            .set(mapOf(email to uid), SetOptions.merge())
+            .addOnSuccessListener {
+                //
+            }
+            .addOnFailureListener{
+                Log.w(TAG, "linkEmailToUid failure: ", it)
+            }
     }
 
     fun logout() {
