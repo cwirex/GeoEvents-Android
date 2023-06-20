@@ -49,8 +49,9 @@ class MenuActivity : AppCompatActivity(), IMap.OnLocationChangeListener {
 
         Toast.makeText(
             this@MenuActivity,
-            "Map marker on (${currentMarker!!.lat}, ${currentMarker!!.lon})",
+            "(${String.format("%.2f", currentMarker!!.lat)}; ${String.format("%.2f", currentMarker!!.lon)})",
             Toast.LENGTH_SHORT
         ).show()
+
     }
 }
