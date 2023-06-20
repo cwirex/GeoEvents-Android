@@ -54,7 +54,7 @@ class EventManager(val user: User) : Database.Events {
     fun addEvent(event: Event): String {
         if (event.eid == "")
             event.eid =
-                "${user.getId().drop(user.getId().length - 4)}${LocalDateTime.now().hashCode()}"
+                "${user.getId().drop(user.getId().length - 4)}_${LocalDateTime.now().dayOfMonth}_${LocalDateTime.now().hashCode()}"
         addEvent(event.eid, mapToPojo(event))
         if (events != null) this.events!![event.eid] = event
         else events = mutableMapOf(event.eid to event)
