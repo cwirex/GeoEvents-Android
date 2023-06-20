@@ -47,7 +47,8 @@ class EventManager(val user: User) : Database.Events {
         }
     }
 
-    /** Sends Friend to db and adds it to list.
+    /** Sends Event to db and adds it to list.
+     * Sends event invitations to friends
      * If eid is empty, generates it in-place.
      * Returns event id */
     fun addEvent(event: Event): String {
@@ -55,6 +56,9 @@ class EventManager(val user: User) : Database.Events {
             event.eid =
                 "${user.getId().drop(user.getId().length - 4)}_${LocalDateTime.now().dayOfMonth}_${LocalDateTime.now().hashCode()}"
         addEvent(event.eid, mapToPojo(event))
+
+        user.invitationManager.makeInvitations(event)
+
         if (events != null) this.events!![event.eid] = event
         else events = mutableMapOf(event.eid to event)
         return event.eid
@@ -206,8 +210,10 @@ class EventManager(val user: User) : Database.Events {
                 callback(null)
             } else {
                 this.eventsInfo = userData.events.toMap()
-                if(this.eventsInfo == null) callback(null)
-                fetchAndUpdateUserEvents(callback)
+                if(this.eventsInfo == null) {
+                    callback(null)
+                }
+                else fetchAndUpdateUserEvents(callback)
             }
         }
     }
@@ -226,24 +232,5 @@ class EventManager(val user: User) : Database.Events {
             }
         }
 
-        /* old
-        else {
-            when(status){
-                Invitation.Status.REJECTED -> {
-                    getInfoAndUpdateUserEvents {  }
-                }
-                Invitation.Status.ACCEPTED -> {
-                    getInfoAndUpdateUserEvents {  }
-                }
-                Invitation.Status.EXPIRED -> {
-                    getInfoAndUpdateUserEvents {  } //suboptimal...
-                }
-                else -> {throw Exception("Exception on EventManager.notifyEventStatusChanged($eid, ${status.name})")}
-            }
-        }
-         */
-
     }
-
-
 }

@@ -7,9 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tea.R
 import com.example.tea.adapters.viewHolders.EventViewHolder
 import com.example.tea.menu.EventMenu
+import com.example.tea.user.event.Event
 
-class EventAdapter(private val eventList: ArrayList<EventMenu>,
-                   private val onItemClick: (EventMenu) -> Unit) : RecyclerView.Adapter<EventViewHolder>() {
+class EventAdapter(private val eventList: List<Event>,
+                   private val onItemClick: (Event) -> Unit) : RecyclerView.Adapter<EventViewHolder>() {
 
     private var listener: OnClickListener? = null;
 
