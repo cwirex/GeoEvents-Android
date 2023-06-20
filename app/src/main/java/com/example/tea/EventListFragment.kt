@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tea.adapters.EventAdapter
+import com.example.tea.map.MapFragment
 import com.example.tea.map.Marker
 import com.example.tea.menu.EventMenu
 
@@ -29,7 +31,9 @@ class EventListFragment : Fragment() {
         eventRecyclerView = view.findViewById(R.id.rv_event_items)
         eventRecyclerView.layoutManager = LinearLayoutManager(activity)
         eventRecyclerView.setHasFixedSize(true)
-        eventAdapter = EventAdapter(getEventList())
+        eventAdapter = EventAdapter(getEventList()) { eventMenu ->
+            parentFragmentManager.beginTransaction().add(R.id.event_list_frame_layout, MapFragment()).commit()
+        }
         eventRecyclerView.adapter = eventAdapter
         return view
     }
@@ -37,7 +41,7 @@ class EventListFragment : Fragment() {
     private fun getEventList(): ArrayList<EventMenu> {
         return arrayListOf(
             EventMenu("jakis Event", Marker(0.0,0.0)),
-            EventMenu("jakis Event", Marker(0.0,0.0))
+            EventMenu("jakis Event dwa", Marker(0.0,0.0))
         )
     }
 }
