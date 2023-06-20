@@ -2,6 +2,7 @@ package com.example.tea
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Recycler
@@ -22,16 +23,15 @@ class EventListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event_list)
-        eventRecyclerView = findViewById(R.id.rv_event_items)
-        eventRecyclerView.layoutManager = LinearLayoutManager(this)
-        eventRecyclerView.setHasFixedSize(true)
-        eventRecyclerView.adapter = EventAdapter(getEventList())
+
+        replaceFragment(EventListFragment())
     }
 
-    private fun getEventList(): ArrayList<EventMenu> {
-        return arrayListOf(
-            EventMenu("jakis Event", Marker(0.0,0.0)),
-            EventMenu("jakis Event", Marker(0.0,0.0))
-        )
+    private fun replaceFragment(fragment: Fragment) {
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+
+        fragmentTransaction.replace(R.id.event_list_frame_layout, fragment)
+        fragmentTransaction.commit()
     }
 }
