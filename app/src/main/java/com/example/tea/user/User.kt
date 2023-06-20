@@ -36,4 +36,8 @@ class User(private val id: String) {
     fun getFriends(callback: (Map<String, Friend>?) -> Unit) {
         friendManager.getUserFriends(callback)
     }
+
+    fun createDbAccount(callback: (Boolean) -> Unit){
+        userManager.createDbUser(callback)
+    }
 }

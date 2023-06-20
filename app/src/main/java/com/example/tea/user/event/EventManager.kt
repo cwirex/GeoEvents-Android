@@ -43,7 +43,6 @@ class EventManager(val user: User) : Database.Events {
                 }
                 .addOnFailureListener {
                     callback(null)
-                    // TODO Throw exception or pass?
                 }
         }
     }
@@ -54,7 +53,7 @@ class EventManager(val user: User) : Database.Events {
     fun addEvent(event: Event): String {
         if (event.eid == "")
             event.eid =
-                "${user.getId().drop(user.getId().length - 4)}${LocalDateTime.now().hashCode()}"
+                "${user.getId().drop(user.getId().length - 4)}_${LocalDateTime.now().dayOfMonth}_${LocalDateTime.now().hashCode()}"
         addEvent(event.eid, mapToPojo(event))
         if (events != null) this.events!![event.eid] = event
         else events = mutableMapOf(event.eid to event)
@@ -207,6 +206,7 @@ class EventManager(val user: User) : Database.Events {
                 callback(null)
             } else {
                 this.eventsInfo = userData.events.toMap()
+                if(this.eventsInfo == null) callback(null)
                 fetchAndUpdateUserEvents(callback)
             }
         }

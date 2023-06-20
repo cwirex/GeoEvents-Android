@@ -67,7 +67,6 @@ class AddEventActivity : AppCompatActivity(), IMap.OnLocationChangeListener {
                 AddEventStep.LOCATIONPICKING -> {
                     if (currentMarker != null) {
                         eventBufferData.location = Location("Przyklad", currentMarker!!)
-//                        replaceFragment(addFriendsToEventFragment)
                         currentStep = AddEventStep.FRIENDPICKING
                         nextButton.callOnClick()
                     } else {
@@ -76,10 +75,11 @@ class AddEventActivity : AppCompatActivity(), IMap.OnLocationChangeListener {
                 }
 
                 AddEventStep.FRIENDPICKING -> {
-                    //select friends (now takes all)
+                                        Toast.makeText(this@AddEventActivity, "Fetching friends...", Toast.LENGTH_SHORT)
+                        .show()
                     user.friendManager.getUserFriends { friends ->
                         eventBufferData.participants = mutableMapOf()
-                        friends.values.forEach { friend: Friend ->
+                        friends?.values?.forEach { friend: Friend ->
                             eventBufferData.participants[friend.id] =
                                 Event.Participant(
                                     friend.id,
@@ -87,9 +87,10 @@ class AddEventActivity : AppCompatActivity(), IMap.OnLocationChangeListener {
                                     Invitation.Status.PENDING
                                 )
                         }
+                        val nFriends: Int = if(friends?.size != null) friends.size else 0
                         Toast.makeText(
                             this,
-                            "Added ${friends.size} friends to this event",
+                            "Added $nFriends friends to this event",
                             Toast.LENGTH_SHORT
                         ).show()
 
@@ -99,7 +100,8 @@ class AddEventActivity : AppCompatActivity(), IMap.OnLocationChangeListener {
                 }
 
                 AddEventStep.TIMEPICKING -> {
-                    val datePicker = DatePickerDialog(this@AddEventActivity, 0,
+                    val datePicker = DatePickerDialog(
+                        this@AddEventActivity, 0,
                         { datePicker, y, m, d ->
                             eventStartDate = LocalDate.of(y, m, d)
                             val timePicker = TimePickerDialog(
