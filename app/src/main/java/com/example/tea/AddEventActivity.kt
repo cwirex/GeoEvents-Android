@@ -34,7 +34,7 @@ class AddEventActivity : AppCompatActivity(), IMap.OnLocationChangeListener {
     private var eventBufferData: EventBufferData = EventBufferData()
     private var currentMarker: Marker? = null
     private lateinit var user: User
-    private lateinit var datePickListener: DatePickerDialog.OnDateSetListener
+    private lateinit var locationName: String
     private lateinit var eventStartDate: LocalDate
 
     private enum class AddEventStep { DESCRITPIONFILLING, LOCATIONPICKING, FRIENDPICKING, TIMEPICKING, SUMMARY, SEND }
@@ -58,15 +58,27 @@ class AddEventActivity : AppCompatActivity(), IMap.OnLocationChangeListener {
         nextButton.setOnClickListener {
             when (currentStep) {
                 AddEventStep.DESCRITPIONFILLING -> {
-                    eventBufferData.title = descriptionFragment.getTitle()
-                    eventBufferData.description = descriptionFragment.getDescription()
-                    replaceFragment(mapFragment)
-                    currentStep = AddEventStep.LOCATIONPICKING
+                    val title = descriptionFragment.getTitle()
+                    val desc = descriptionFragment.getDescription()
+                    val name = descriptionFragment.getName()
+                    if (title.isNotEmpty() and desc.isNotEmpty() and name.isNotEmpty()) {
+                        eventBufferData.title = title
+                        eventBufferData.description = desc
+                        locationName = name
+                        replaceFragment(mapFragment)
+                        currentStep = AddEventStep.LOCATIONPICKING
+                    } else {
+                        Toast.makeText(
+                            this@AddEventActivity,
+                            "Fields cannot be empty!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
 
                 AddEventStep.LOCATIONPICKING -> {
                     if (currentMarker != null) {
-                        eventBufferData.location = Location("Przyklad", currentMarker!!)
+                        eventBufferData.location = Location(locationName, currentMarker!!)
                         currentStep = AddEventStep.FRIENDPICKING
                         nextButton.callOnClick()
                     } else {
@@ -75,7 +87,7 @@ class AddEventActivity : AppCompatActivity(), IMap.OnLocationChangeListener {
                 }
 
                 AddEventStep.FRIENDPICKING -> {
-                                        Toast.makeText(this@AddEventActivity, "Fetching friends...", Toast.LENGTH_SHORT)
+                    Toast.makeText(this@AddEventActivity, "Fetching friends...", Toast.LENGTH_SHORT)
                         .show()
                     user.friendManager.getUserFriends { friends ->
                         eventBufferData.participants = mutableMapOf()
@@ -87,7 +99,7 @@ class AddEventActivity : AppCompatActivity(), IMap.OnLocationChangeListener {
                                     Invitation.Status.PENDING
                                 )
                         }
-                        val nFriends: Int = if(friends?.size != null) friends.size else 0
+                        val nFriends: Int = if (friends?.size != null) friends.size else 0
                         Toast.makeText(
                             this,
                             "Added $nFriends friends to this event",
@@ -127,7 +139,7 @@ class AddEventActivity : AppCompatActivity(), IMap.OnLocationChangeListener {
                 AddEventStep.SUMMARY -> {
                     eventBufferData.eid = ""    // OK, will be set up by EventManager
                     eventBufferData.ownerId = user.getId()
-                    val locationString = eventBufferData.location.toString()
+                    val locationString = eventBufferData.location.name
                     val nFriends = eventBufferData.participants.size.toString()
                     val startString = eventBufferData.timeFrame.start.toString()
 

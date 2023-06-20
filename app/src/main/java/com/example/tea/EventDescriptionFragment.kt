@@ -12,6 +12,7 @@ class EventDescriptionFragment : Fragment() {
 
     private lateinit var titleEditText: EditText
     private lateinit var descriptionEditText: EditText
+    private lateinit var nameEditText: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +27,7 @@ class EventDescriptionFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_event_description, container, false)
         titleEditText = view.findViewById(R.id.event_title_edit_text)
         descriptionEditText = view.findViewById(R.id.event_description_edit_text)
+        nameEditText = view.findViewById(R.id.event_name_edit_text)
 
         return view
     }
@@ -33,4 +35,6 @@ class EventDescriptionFragment : Fragment() {
     public fun getTitle(): String = titleEditText.text.toString()
 
     public fun getDescription(): String = descriptionEditText.text.toString()
+
+    fun getName(): String = nameEditText.text.toString()
 }
