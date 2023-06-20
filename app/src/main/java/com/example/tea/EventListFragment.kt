@@ -12,6 +12,7 @@ import com.example.tea.adapters.EventAdapter
 import com.example.tea.map.MapFragment
 import com.example.tea.map.Marker
 import com.example.tea.menu.EventMenu
+import com.google.android.gms.maps.model.LatLng
 
 
 class EventListFragment : Fragment() {
@@ -32,7 +33,9 @@ class EventListFragment : Fragment() {
         eventRecyclerView.layoutManager = LinearLayoutManager(activity)
         eventRecyclerView.setHasFixedSize(true)
         eventAdapter = EventAdapter(getEventList()) { eventMenu ->
-            parentFragmentManager.beginTransaction().add(R.id.event_list_frame_layout, MapFragment()).commit()
+            var mapFragment = MapFragment(eventMenu.marker)
+            parentFragmentManager.beginTransaction().add(R.id.event_list_frame_layout, mapFragment).commit()
+
         }
         eventRecyclerView.adapter = eventAdapter
         return view
@@ -41,7 +44,8 @@ class EventListFragment : Fragment() {
     private fun getEventList(): ArrayList<EventMenu> {
         return arrayListOf(
             EventMenu("jakis Event", Marker(0.0,0.0)),
-            EventMenu("jakis Event dwa", Marker(0.0,0.0))
+            EventMenu("jakis Event dwa", Marker(25.0,25.0))
         )
     }
+
 }

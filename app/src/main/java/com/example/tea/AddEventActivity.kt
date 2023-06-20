@@ -48,7 +48,7 @@ class AddEventActivity : AppCompatActivity(), IMap.OnLocationChangeListener {
         currentStep = AddEventStep.DESCRITPIONFILLING
         binding = ActivityAddEventBinding.inflate(layoutInflater)
         descriptionFragment = EventDescriptionFragment()
-        mapFragment = MapFragment()
+        mapFragment = MapFragment(null)
         addFriendsToEventFragment = AddFriendsToEventFragment()
         nextButton = binding.submitEventButton
 

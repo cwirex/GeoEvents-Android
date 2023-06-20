@@ -24,7 +24,7 @@ class MenuActivity : AppCompatActivity(), IMap.OnLocationChangeListener {
         binding.bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.menu_events -> replaceFragment(EventsMenuFragment())
-                R.id.menu_map -> replaceFragment(MapFragment())
+                R.id.menu_map -> replaceFragment(MapFragment(null))
                 R.id.menu_friends -> replaceFragment(FriendsMenuFragment())
 
                 else -> {

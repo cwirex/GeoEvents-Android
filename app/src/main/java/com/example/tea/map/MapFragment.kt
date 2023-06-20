@@ -21,10 +21,12 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
-class MapFragment : Fragment() {
+class MapFragment(pickedEventMarker: Marker?) : Fragment() {
     private lateinit var locationClient: FusedLocationProviderClient
     lateinit var gmap: GoogleMap
+    val pickedEventMarker: Marker? = pickedEventMarker
     private var locationChangeListener: IMap.OnLocationChangeListener? = null
+
 
     companion object {
         const val PERMISSION_REQUEST_CODE = 1
@@ -49,7 +51,14 @@ class MapFragment : Fragment() {
             }
         }
 
+
+
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
     }
 
     private fun checkPermissions(){
@@ -94,7 +103,13 @@ class MapFragment : Fragment() {
 
     private fun updateUserLocation(location: Location) {
         //TODO: Update user's location
-        val pos = LatLng(location.latitude, location.longitude)
+        var pos = LatLng(location.latitude, location.longitude)
+
+        if(pickedEventMarker != null)
+        {
+            pos = LatLng(pickedEventMarker.lat, pickedEventMarker.lon)
+        }
+
         notifyLocationChanged(pos)
         makeMarker(latLng = pos, "Last known location")
     }
@@ -114,7 +129,7 @@ class MapFragment : Fragment() {
         }
     }
 
-    private fun makeMarker(latLng: LatLng, title: String? = null) {
+    fun makeMarker(latLng: LatLng, title: String? = null) {
         val markerOptions = MarkerOptions()
         markerOptions.position(latLng)
         if(title != null){
