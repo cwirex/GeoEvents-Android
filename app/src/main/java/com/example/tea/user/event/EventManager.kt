@@ -55,6 +55,11 @@ class EventManager(val user: User) : Database.Events {
         if (event.eid == "")
             event.eid =
                 "${user.getId().drop(user.getId().length - 4)}_${LocalDateTime.now().dayOfMonth}_${LocalDateTime.now().hashCode()}"
+
+        if(!event.participants.keys.contains(user.getId())){
+            event.participants[user.getId()] = Event.Participant(user.getId(), "", Invitation.Status.ACCEPTED)
+        }
+
         addEvent(event.eid, mapToPojo(event))
 
         user.invitationManager.makeInvitations(event)

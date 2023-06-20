@@ -42,7 +42,6 @@ class EventListFragment : Fragment() {
             parentFragmentManager.beginTransaction()
                 .add(R.id.event_list_frame_layout, mapFragment)
                 .commit()
-
         }
         eventRecyclerView.adapter = eventAdapter
         updateEvenList()

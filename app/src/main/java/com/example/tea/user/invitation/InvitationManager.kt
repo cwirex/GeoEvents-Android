@@ -30,6 +30,7 @@ class InvitationManager(val user: User) {
     fun sendInvitation(eid: String, uid: String, status: Invitation.Status) {
         user.eventManager.updateEvent(eid, mapOf("participants.${uid}" to status.ordinal))
         user.userManager.updateUser(uid, mapOf("invitations.$eid" to status.ordinal))
+        user.userManager.updateUser(uid, mapOf("events.$eid" to (status == Invitation.Status.ACCEPTED)))
     }
 
     /** Creates desirable type of Invitation based on delivered Status*/
