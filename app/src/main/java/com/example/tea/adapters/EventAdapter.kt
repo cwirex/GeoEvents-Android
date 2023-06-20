@@ -6,8 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tea.R
 import com.example.tea.adapters.viewHolders.EventViewHolder
 import com.example.tea.menu.EventMenu
+import com.example.tea.user.event.Event
 
-class EventAdapter(private val eventList: ArrayList<EventMenu>) : RecyclerView.Adapter<EventViewHolder>() {
+class EventAdapter(private val eventList: List<Event>) : RecyclerView.Adapter<EventViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
             R.layout.item_event_list,
