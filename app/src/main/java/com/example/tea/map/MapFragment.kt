@@ -13,6 +13,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.tea.R
+import com.example.tea.user.event.Event
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -21,16 +22,16 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
-class MapFragment(pickedEventMarker: Marker?) : Fragment() {
+class MapFragment(private val pickedEventMarker: Marker? = null) : Fragment() {
     private lateinit var locationClient: FusedLocationProviderClient
     lateinit var gmap: GoogleMap
-    val pickedEventMarker: Marker? = pickedEventMarker
     private var locationChangeListener: IMap.OnLocationChangeListener? = null
 
 
     companion object {
         const val PERMISSION_REQUEST_CODE = 1
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,10 +46,19 @@ class MapFragment(pickedEventMarker: Marker?) : Fragment() {
         supportMapFragment.getMapAsync { googleMap ->
             gmap = googleMap
             checkPermissions()
+            if (pickedEventMarker != null) {
+                makeMarker(
+                    LatLng(pickedEventMarker.lat, pickedEventMarker.lon),
+                    "Event location",
+                    clear = false
+                )
+            }
             gmap.setOnMapClickListener { latLng ->
                 makeMarker(latLng)
                 notifyLocationChanged(latLng)
             }
+
+            // todo: notify map ready?
         }
 
 
@@ -61,7 +71,7 @@ class MapFragment(pickedEventMarker: Marker?) : Fragment() {
 
     }
 
-    private fun checkPermissions(){
+    private fun checkPermissions() {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -84,34 +94,34 @@ class MapFragment(pickedEventMarker: Marker?) : Fragment() {
         }
     }
 
-    private fun getLastLocation(){
+    private fun getLastLocation() {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             locationClient.lastLocation
-                .addOnSuccessListener { location : Location? ->
-                    if(location!=null){
+                .addOnSuccessListener { location: Location? ->
+                    if (location != null) {
                         updateUserLocation(location)
                     }
                 }
-        } else{
-            Toast.makeText(requireContext(), "Map won't work without gps permission!", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "Map won't work without gps permission!",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
     private fun updateUserLocation(location: Location) {
-        //TODO: Update user's location
-        var pos = LatLng(location.latitude, location.longitude)
-
-        if(pickedEventMarker != null)
-        {
-            pos = LatLng(pickedEventMarker.lat, pickedEventMarker.lon)
-        }
+        val pos = LatLng(location.latitude, location.longitude)
 
         notifyLocationChanged(pos)
         makeMarker(latLng = pos, "Last known location")
+
+        //todo: Update user's location
     }
 
     @Deprecated("Deprecated in Java")
@@ -124,20 +134,38 @@ class MapFragment(pickedEventMarker: Marker?) : Fragment() {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLastLocation()
             } else {
-                Toast.makeText(requireContext(), "Map won't work without gps permission!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Map won't work without gps permission!",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
 
-    fun makeMarker(latLng: LatLng, title: String? = null) {
+    fun makeMultipleEventMarkers(events: Collection<Event>) {
+        events.forEach { event: Event ->
+            val latLng = LatLng(
+                event.location.position.lat,
+                event.location.position.lon
+            )
+            makeMarker(
+                latLng,
+                "${event.title} (${event.location.name})",
+                clear = false
+            )
+        }
+    }
+
+    fun makeMarker(latLng: LatLng, title: String? = null, clear: Boolean = true) {
         val markerOptions = MarkerOptions()
         markerOptions.position(latLng)
-        if(title != null){
+        if (title != null) {
             markerOptions.title(title)
-        } else{
+        } else {
             markerOptions.title("${latLng.latitude} : ${latLng.longitude}")
         }
-        gmap.clear()
+        if (clear) gmap.clear()
         gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f))
         gmap.addMarker(markerOptions)
     }
