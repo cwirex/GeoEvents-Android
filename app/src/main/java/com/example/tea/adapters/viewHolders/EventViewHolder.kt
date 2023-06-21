@@ -15,4 +15,9 @@ class EventViewHolder(itemView: View, onItemClicked: (Int) -> Unit) : RecyclerVi
 
 
     val eventTitle: TextView = itemView.findViewById(R.id.event_item_title)
+    val eventLocationName: TextView = itemView.findViewById(R.id.event_item_place)
+    val eventDesc: TextView = itemView.findViewById(R.id.event_item_desc)
+    val eventCreatedAt: TextView = itemView.findViewById(R.id.rv1)
+    val eventStartsAt: TextView = itemView.findViewById(R.id.rv2)
+    val eventParticipants: TextView = itemView.findViewById(R.id.rv3)
 }

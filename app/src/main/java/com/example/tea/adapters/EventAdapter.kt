@@ -8,6 +8,9 @@ import com.example.tea.R
 import com.example.tea.adapters.viewHolders.EventViewHolder
 import com.example.tea.menu.EventMenu
 import com.example.tea.user.event.Event
+import com.example.tea.user.event.TimeFrame
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class EventAdapter(private val eventList: List<Event>,
                    private val onItemClick: (Event) -> Unit) : RecyclerView.Adapter<EventViewHolder>() {
@@ -26,7 +29,21 @@ class EventAdapter(private val eventList: List<Event>,
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        holder.eventTitle.text = eventList[position].title
+        val event = eventList[position]
+
+        val s: LocalDateTime = event.timeFrame.start
+        val formatterS = DateTimeFormatter.ofPattern("dd MMM',' HH:mm")
+        val timeStart = s.format(formatterS)
+        val c: LocalDateTime = event.timeFrame.end
+        val formatterC = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        val timeCreated = c.format(formatterC)
+
+        holder.eventTitle.text = event.title
+        holder.eventLocationName.text = event.location.name
+        holder.eventDesc.text = event.description
+        holder.eventStartsAt.text = timeStart
+        holder.eventCreatedAt.text = timeCreated
+        holder.eventParticipants.text = event.participants.size.toString()
     }
 
     override fun getItemCount(): Int = eventList.size

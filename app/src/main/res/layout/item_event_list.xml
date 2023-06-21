@@ -1,25 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp">
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="4dp"
+    android:layout_marginHorizontal="4dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
 
-    <TextView
-        android:id="@+id/event_item_title"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="TextView"
-        android:textSize="35dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="1dp"
-        android:background="#FFFFFF"/>
+        android:orientation="vertical"
+        android:layout_marginVertical="4dp">
+
+        <TextView
+            android:id="@+id/event_item_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:gravity="center"
+            android:text="title"
+            android:textColor="@color/purple_700"
+            android:textSize="32dp" />
+
+        <TextView
+            android:id="@+id/event_item_place"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:gravity="center"
+            android:text="placename"
+            android:textColor="@color/teal_700"
+            android:textSize="20dp" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/event_item_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:gravity="center"
+            android:text="desc"
+            android:textSize="18dp" />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/rh1"
+                    android:layout_weight="1"
+                    android:paddingVertical="8dp"
+                    android:text="Utworzono"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
+
+                <View
+                    android:layout_width="2px"
+                    android:layout_height="match_parent"
+                    android:background="#000000" />
+
+                <TextView
+                    android:id="@+id/rv1"
+                    android:layout_weight="2"
+                    android:paddingVertical="8dp"
+                    android:text="value"
+                    android:textAlignment="center"
+                    android:textColor="@color/purple_500"
+                    android:textSize="18dp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/rh2"
+                    android:layout_weight="1"
+                    android:paddingVertical="8dp"
+                    android:text="Start"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
+
+                <View
+                    android:layout_width="2px"
+                    android:layout_height="match_parent"
+                    android:background="#000000" />
+
+                <TextView
+                    android:id="@+id/rv2"
+                    android:layout_weight="2"
+                    android:paddingVertical="8dp"
+                    android:text="value"
+                    android:textAlignment="center"
+                    android:textColor="@color/purple_500"
+                    android:textSize="18dp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/rh3"
+                    android:layout_weight="1"
+                    android:paddingVertical="8dp"
+                    android:text="Uczestnicy"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
+
+                <View
+                    android:layout_width="2px"
+                    android:layout_height="match_parent"
+                    android:background="#000000" />
+
+                <TextView
+                    android:id="@+id/rv3"
+                    android:layout_weight="2"
+                    android:paddingVertical="8dp"
+                    android:text="value"
+                    android:textAlignment="center"
+                    android:textColor="@color/purple_500"
+                    android:textSize="18dp" />
+            </TableRow>
+        </TableLayout>
+
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
