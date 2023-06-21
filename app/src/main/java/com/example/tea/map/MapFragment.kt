@@ -45,13 +45,14 @@ class MapFragment(private val pickedEventMarker: Marker? = null) : Fragment() {
 
         supportMapFragment.getMapAsync { googleMap ->
             gmap = googleMap
-            checkPermissions()
             if (pickedEventMarker != null) {
                 makeMarker(
                     LatLng(pickedEventMarker.lat, pickedEventMarker.lon),
                     "Event location",
                     clear = false
                 )
+            } else{
+                checkPermissions()
             }
             gmap.setOnMapClickListener { latLng ->
                 makeMarker(latLng)
